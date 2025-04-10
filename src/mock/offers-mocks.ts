@@ -1,0 +1,78 @@
+import { CardType } from '../types/offer-type';
+
+export const CARDS: CardType[] = [
+  {
+    id: 1,
+    img: 'img/apartment-01.jpg',
+    rating: 4,
+    premiumMark: true,
+    priceValue: '120',
+    placeCardName: 'Beautiful &amp; luxurious apartment at great location',
+    placeCardType: 'Apartment',
+    isFavorite: false,
+  },
+  {
+    id: 2,
+    img: 'img/apartment-01.jpg',
+    rating: 4,
+    premiumMark: false,
+    priceValue: '80',
+    placeCardName: 'Wood and stone place',
+    placeCardType: 'Room',
+    isFavorite: true,
+  },
+  {
+    id: 3,
+    img: 'img/apartment-02.jpg',
+    rating: 4,
+    premiumMark: false,
+    priceValue: '132',
+    placeCardName: 'Canal View Prinsengracht',
+    placeCardType: 'Apartment',
+    isFavorite: false,
+  },
+  {
+    id: 4,
+    img: 'img/apartment-03.jpg',
+    rating: 5,
+    premiumMark: true,
+    priceValue: '180',
+    placeCardName: 'Nice, cozy, warm big bed apartment',
+    placeCardType: 'Apartment',
+    isFavorite: true,
+  },
+  {
+    id: 5,
+    img: 'img/room.jpg',
+    rating: 4,
+    premiumMark: false,
+    priceValue: '80',
+    placeCardName: 'Wood and stone place',
+    placeCardType: 'Room',
+    isFavorite: true,
+  },
+  {
+    id: 6,
+    img: 'img/room.jpg',
+    rating: 1,
+    premiumMark: true,
+    priceValue: '8000',
+    placeCardName: 'stone place',
+    placeCardType: 'Room',
+    isFavorite: false,
+  },
+];
+
+
+export const OFFERS: string[] = [
+  'Wi-Fi',
+  'Washing machine',
+  'Towels',
+  'Heating',
+  'Coffee machine',
+  'Baby seat',
+  'Kitchen',
+  'Dishwasher',
+  'Cable TV',
+  'Fridge',
+];
