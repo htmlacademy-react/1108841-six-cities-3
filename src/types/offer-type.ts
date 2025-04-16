@@ -5,6 +5,6 @@ export type CardType = {
   priceValue: string;
   rating: number;
   placeCardName: string;
-  placeCardType: string;
+  placeCardType: 'apartment' | 'room' | 'house' | 'hotel';
   isFavorite: boolean;
 };
