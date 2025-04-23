@@ -8,7 +8,7 @@ export const CARDS: CardType[] = [
     premiumMark: true,
     priceValue: '120',
     placeCardName: 'Beautiful &amp; luxurious apartment at great location',
-    placeCardType: 'Apartment',
+    placeCardType: 'apartment',
     isFavorite: false,
   },
   {
@@ -18,7 +18,7 @@ export const CARDS: CardType[] = [
     premiumMark: false,
     priceValue: '80',
     placeCardName: 'Wood and stone place',
-    placeCardType: 'Room',
+    placeCardType: 'room',
     isFavorite: true,
   },
   {
@@ -28,7 +28,7 @@ export const CARDS: CardType[] = [
     premiumMark: false,
     priceValue: '132',
     placeCardName: 'Canal View Prinsengracht',
-    placeCardType: 'Apartment',
+    placeCardType: 'apartment',
     isFavorite: false,
   },
   {
@@ -38,7 +38,7 @@ export const CARDS: CardType[] = [
     premiumMark: true,
     priceValue: '180',
     placeCardName: 'Nice, cozy, warm big bed apartment',
-    placeCardType: 'Apartment',
+    placeCardType: 'apartment',
     isFavorite: true,
   },
   {
@@ -48,7 +48,7 @@ export const CARDS: CardType[] = [
     premiumMark: false,
     priceValue: '80',
     placeCardName: 'Wood and stone place',
-    placeCardType: 'Room',
+    placeCardType: 'room',
     isFavorite: true,
   },
   {
@@ -58,7 +58,7 @@ export const CARDS: CardType[] = [
     premiumMark: true,
     priceValue: '8000',
     placeCardName: 'stone place',
-    placeCardType: 'Room',
+    placeCardType: 'room',
     isFavorite: false,
   },
 ];
