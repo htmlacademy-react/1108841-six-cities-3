@@ -1,10 +1,13 @@
 import Card from '../../components/offer-card/offer-card';
 import { CARDS, OFFERS } from '../../mock/offers-mocks';
+import Header from '../../components/header/header';
+import Footer from '../../components/footer/footer';
 
-export const OffersPage = () => {
+export default function OffersPage() {
   const cardOfferPage = CARDS.slice(0, 3);
   return (
     <div className="page">
+      <Header />
       <main className="page__main page__main--offer">
         <section className="offer">
           <div className="offer__gallery-container container">
@@ -298,6 +301,7 @@ export const OffersPage = () => {
           </section>
         </div>
       </main>
+      <Footer />
     </div>
   );
-};
+}

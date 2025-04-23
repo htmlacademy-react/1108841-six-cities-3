@@ -1,3 +1,11 @@
+const APP_ROUTE = {
+  MAIN: '/',
+  FAVORITES: '/favorites',
+  OFFER: '/offer/:id',
+  LOGIN: '/login',
+  NOT_FOUND: '*',
+} as const;
+
 const CITIES = [
   'Paris',
   'Cologne',
@@ -14,4 +22,4 @@ const SORT_TYPES = [
   'Top rated first',
 ] as const;
 
-export { CITIES, SORT_TYPES };
+export { CITIES, SORT_TYPES, APP_ROUTE };
