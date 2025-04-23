@@ -1,5 +1,5 @@
-import Footer from '../../components/footer/footer';
-import Header from '../../components/header/header';
+import Footer from '../../components/footer';
+import Header from '../../components/header';
 
 function FavoritePage(): JSX.Element {
   return (

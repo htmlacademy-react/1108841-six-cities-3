@@ -1,9 +1,9 @@
-import Header from '../../components/header/header';
-import Footer from '../../components/footer/footer';
-import CardListMain from '../../components/offer-card/offer-list';
-import Sort from '../../components/sort/sort';
-import Map from '../../components/map/map';
-import MainPageNavLocation from '../../components/main-page-nav-location/main-page-nav-location';
+import Header from '../../components/header';
+import Footer from '../../components/footer';
+import CardListMain from '../../components/offer-card';
+import Sort from '../../components/sort';
+import Map from '../../components/map';
+import MainPageNavLocation from '../../components/main-page-nav-location';
 
 type MainPageProps = {
   offersCount: number;

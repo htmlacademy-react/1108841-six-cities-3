@@ -1,5 +1,5 @@
-import Header from '../../components/header/header';
-import Footer from '../../components/footer/footer';
+import Header from '../../components/header';
+import Footer from '../../components/footer';
 import { Link } from 'react-router-dom';
 import { APP_ROUTE } from '../../const';
 
