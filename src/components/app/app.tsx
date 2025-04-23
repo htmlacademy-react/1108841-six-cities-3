@@ -2,11 +2,11 @@ import { Routes, Route, BrowserRouter } from 'react-router-dom';
 import { useState } from 'react';
 import { CARDS } from '../../mock/offers-mocks';
 import { APP_ROUTE } from '../../const';
-import MainPage from '../../pages/main-page/main-page';
-import NotFoundPage from '../../pages/404-page/404-page';
-import FavoritesPage from '../../pages/favorites-page/favorites-page';
-import OfferPage from '../../pages/offer-page/offer-page';
-import LoginPage from '../../pages/login-page/login-page';
+import MainPage from '../../pages/main-page';
+import NotFoundPage from '../../pages/404-page';
+import FavoritesPage from '../../pages/favorites-page';
+import OfferPage from '../../pages/offer-page';
+import LoginPage from '../../pages/login-page';
 import PrivateRoute from '../private/private';
 
 function App(): JSX.Element {
