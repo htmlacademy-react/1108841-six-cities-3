@@ -1,11 +1,15 @@
 import { ChangeEvent, FormEvent, useState } from 'react';
 
+type ReviewFormProps = {
+  offerId: number;
+};
+
 type ReviewFormData = {
   rating: number;
   comment: string;
 };
 
-function ReviewForm() {
+function ReviewForm({ offerId }: ReviewFormProps) {
   const [formData, setFormData] = useState<ReviewFormData>({
     rating: 0,
     comment: '',
@@ -28,7 +32,12 @@ function ReviewForm() {
   const handleSubmit = (evt: FormEvent<HTMLFormElement>) => {
     evt.preventDefault();
     // Данные для отправки на сервер
-    // offerId: ${offerId}, rating: ${formData.rating}, comment: ${formData.comment}
+    const submitData = {
+      id: offerId,
+      rating: formData.rating,
+      comment: formData.comment
+    };
+    console.log(submitData);
   };
 
   const isSubmitDisabled = formData.rating === 0 || formData.comment.length < 50 || formData.comment.length > 300;
