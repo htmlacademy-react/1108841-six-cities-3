@@ -1,3 +1,4 @@
+import { Link } from 'react-router-dom';
 import { getRating } from '../../utils/utils';
 import { CardType } from '../../types/offer-type';
 
@@ -5,7 +6,7 @@ type CardPropsType = {
   card: CardType;
 };
 
-function Card({ card }: CardPropsType): JSX.Element {
+function Card({ card }: CardPropsType) {
   return (
     <article className="cities__card place-card">
       {card.premiumMark === true && (
@@ -14,7 +15,7 @@ function Card({ card }: CardPropsType): JSX.Element {
         </div>
       )}
       <div className="cities__image-wrapper place-card__image-wrapper">
-        <a href="#">
+        <Link to={`/offer/${card.id}`}>
           <img
             className="place-card__image"
             src={card.img}
@@ -22,7 +23,7 @@ function Card({ card }: CardPropsType): JSX.Element {
             height="200"
             alt="Place image"
           />
-        </a>
+        </Link>
       </div>
       <div className="place-card__info">
         <div className="place-card__price-wrapper">
@@ -47,7 +48,7 @@ function Card({ card }: CardPropsType): JSX.Element {
           </div>
         </div>
         <h2 className="place-card__name">
-          <a href="#">{card.placeCardName}</a>
+          <Link to={`/offer/${card.id}`}>{card.placeCardName}</Link>
         </h2>
         <p className="place-card__type">{card.placeCardType}</p>
       </div>

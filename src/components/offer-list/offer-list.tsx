@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import Card from './offer-card';
+import Card from '../offer-card/offer-card';
 import { Offer } from '../../mock/mocks-types';
 import { CardType } from '../../types/offer-type';
 
@@ -7,7 +7,7 @@ type OfferListProps = {
   offers: Offer[];
 };
 
-function CardListMain({ offers }: OfferListProps) {
+function OfferList({ offers }: OfferListProps) {
   const [, setActiveOffer] = useState<Offer | null>(null);
 
   const handleCardHover = (offer: Offer) => {
@@ -44,4 +44,4 @@ function CardListMain({ offers }: OfferListProps) {
   );
 }
 
-export default CardListMain;
+export default OfferList;

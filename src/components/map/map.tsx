@@ -1,6 +1,7 @@
-function Map(): JSX.Element {
+function Map() {
   return (
-    <section className="cities__map map" />
+    <section className="cities__map map">
+    </section>
   );
 }
 

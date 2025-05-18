@@ -1,26 +1,19 @@
-import Header from '../../components/header';
-import Footer from '../../components/footer';
 import { Link } from 'react-router-dom';
-import { APP_ROUTE } from '../../const';
+import Header from '../../components/header';
 
-function NotFoundPage(): JSX.Element {
+function NotFoundPage() {
   return (
-    <div className="page page--gray page--main">
+    <div className="page">
       <Header />
-      <main
-        className="page__main page__main--index"
-        style={{
-          display: 'flex',
-          flexDirection: 'column',
-          alignItems: 'center',
-          justifyContent: 'center',
-          height: '100vh',
-        }}
-      >
-        <h1>404 Not Found</h1>
-        <Link to={APP_ROUTE.MAIN}>Go to main page</Link>
+      <main className="page__main">
+        <div className="container" style={{ textAlign: 'center', padding: '100px 0' }}>
+          <h1>404 Not Found</h1>
+          <p>Sorry, the page you are looking for does not exist.</p>
+          <Link to="/" style={{ color: '#4481c3', textDecoration: 'underline' }}>
+            Go to Main Page
+          </Link>
+        </div>
       </main>
-      <Footer />
     </div>
   );
 }

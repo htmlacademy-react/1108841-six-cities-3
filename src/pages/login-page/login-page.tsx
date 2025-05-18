@@ -3,7 +3,7 @@ import Header from '../../components/header';
 import { Link } from 'react-router-dom';
 import { APP_ROUTE } from '../../const';
 
-function LoginPage(): JSX.Element {
+function LoginPage() {
   return (
     <div className="page page--gray page--login">
       <Header />

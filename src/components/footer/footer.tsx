@@ -1,10 +1,9 @@
 import { Link } from 'react-router-dom';
-import { APP_ROUTE } from '../../const';
 
-function Footer(): JSX.Element {
+function Footer() {
   return (
     <footer className="footer container">
-      <Link className="footer__logo-link" to={APP_ROUTE.MAIN}>
+      <Link className="footer__logo-link" to="/">
         <img
           className="footer__logo"
           src="img/logo.svg"
