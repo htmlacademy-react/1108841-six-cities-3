@@ -28,7 +28,7 @@ function MainPage({ offers }: MainPageProps) {
               <CardListMain offers={offers} />
             </section>
             <div className="cities__right-section">
-              <Map offers={offers} />
+              <Map />
             </div>
           </div>
         </div>

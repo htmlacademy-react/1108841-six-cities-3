@@ -1,6 +1,8 @@
-function Map() {
+function Map () {
+
   return (
-    <section className="cities__map map" />
+    <section className="cities__map map">
+    </section>
   );
 }
 
