@@ -1,7 +1,7 @@
-import Header from '../../components/header';
 import Footer from '../../components/footer';
+import Header from '../../components/header';
 
-function FavoritesPageEmpty(): JSX.Element {
+function FavoritesPageEmpty() {
   return (
     <div className="page page--favorites-empty">
       <Header />

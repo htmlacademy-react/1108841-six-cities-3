@@ -1,13 +1,12 @@
 import { useState } from 'react';
-import Card from './offer-card';
+import Card from '../offer-card';
 import { Offer } from '../../mock/mocks-types';
-import { CardType } from '../../types/offer-type';
 
 type OfferListProps = {
   offers: Offer[];
 };
 
-function CardListMain({ offers }: OfferListProps) {
+function OfferList({ offers }: OfferListProps) {
   const [, setActiveOffer] = useState<Offer | null>(null);
 
   const handleCardHover = (offer: Offer) => {
@@ -18,17 +17,6 @@ function CardListMain({ offers }: OfferListProps) {
     setActiveOffer(null);
   };
 
-  const mapOffersToCardType = (offer: Offer): CardType => ({
-    id: offer.id,
-    img: offer.previewImage,
-    rating: Math.floor(offer.rating),
-    premiumMark: offer.isPremium,
-    priceValue: String(offer.price),
-    placeCardName: offer.title,
-    placeCardType: offer.type.toLowerCase() as 'apartment' | 'room' | 'house' | 'hotel',
-    isFavorite: offer.isFavorite,
-  });
-
   return (
     <div className="cities__places-list places__list tabs__content">
       {offers.map((offer) => (
@@ -37,11 +25,22 @@ function CardListMain({ offers }: OfferListProps) {
           onMouseEnter={() => handleCardHover(offer)}
           onMouseLeave={handleCardLeave}
         >
-          <Card card={mapOffersToCardType(offer)} />
+          <Card
+            card={{
+              id: offer.id,
+              img: offer.previewImage,
+              rating: Math.floor(offer.rating),
+              premiumMark: offer.isPremium,
+              priceValue: String(offer.price),
+              placeCardName: offer.title,
+              placeCardType: offer.type.toLowerCase() as 'apartment' | 'room' | 'house' | 'hotel',
+              isFavorite: offer.isFavorite,
+            }}
+          />
         </div>
       ))}
     </div>
   );
 }
 
-export default CardListMain;
+export default OfferList;
