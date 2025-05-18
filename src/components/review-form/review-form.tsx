@@ -1,4 +1,4 @@
-import { ChangeEvent, FormEvent, useState } from 'react';
+import { ChangeEvent, FormEvent, useState, useEffect } from 'react';
 
 type ReviewFormProps = {
   offerId: number;
@@ -14,6 +14,14 @@ function ReviewForm({ offerId }: ReviewFormProps) {
     rating: 0,
     comment: '',
   });
+
+  useEffect(() => {
+    document.title = `Отзыв для предложения ${offerId}`;
+
+    return () => {
+      document.title = 'Six Cities';
+    };
+  }, [offerId]);
 
   const handleRatingChange = (evt: ChangeEvent<HTMLInputElement>) => {
     setFormData({
@@ -31,13 +39,6 @@ function ReviewForm({ offerId }: ReviewFormProps) {
 
   const handleSubmit = (evt: FormEvent<HTMLFormElement>) => {
     evt.preventDefault();
-    // Данные для отправки на сервер
-    const submitData = {
-      id: offerId,
-      rating: formData.rating,
-      comment: formData.comment
-    };
-    console.log(submitData);
   };
 
   const isSubmitDisabled = formData.rating === 0 || formData.comment.length < 50 || formData.comment.length > 300;
