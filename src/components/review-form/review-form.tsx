@@ -1,12 +1,12 @@
 import { ChangeEvent, FormEvent, useState } from 'react';
 
-type ReviewFormProps = {
-  offerId: number;
+type ReviewFormData = {
+  rating: number;
+  comment: string;
 };
 
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
-function ReviewForm({ offerId }: ReviewFormProps) {
-  const [formData, setFormData] = useState({
+function ReviewForm() {
+  const [formData, setFormData] = useState<ReviewFormData>({
     rating: 0,
     comment: '',
   });
