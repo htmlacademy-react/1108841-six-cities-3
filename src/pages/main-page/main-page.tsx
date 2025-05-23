@@ -2,7 +2,7 @@ import Header from '../../components/header';
 import Footer from '../../components/footer';
 import CardListMain from '../../components/offer-card';
 import Sort from '../../components/sort';
-import Map from '../../components/map';
+import { Map } from '../../components/map/map';
 import MainPageNavLocation from '../../components/main-page-nav-location';
 import { Offer } from '../../mock/mocks-types';
 
@@ -28,7 +28,7 @@ function MainPage({ offers }: MainPageProps) {
               <CardListMain offers={offers} />
             </section>
             <div className="cities__right-section">
-              <Map />
+              <Map offers={offers} />
             </div>
           </div>
         </div>

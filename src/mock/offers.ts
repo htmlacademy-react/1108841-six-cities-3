@@ -9,7 +9,7 @@ export const offers: Offer[] = [
         longitude: 4.895168,
         zoom: 10,
       },
-      name: 'Paris',
+      name: 'Amsterdam',
     },
     description:
       'A quiet cozy and picturesque that hides behind a a river by the unique lightness of Amsterdam.',
@@ -33,8 +33,8 @@ export const offers: Offer[] = [
     isFavorite: true,
     isPremium: true,
     location: {
-      latitude: 52.35514938496378,
-      longitude: 4.673877537499948,
+      latitude: 52.3909553943508,
+      longitude: 4.85309666406198,
       zoom: 8,
     },
     maxAdults: 5,
@@ -48,11 +48,11 @@ export const offers: Offer[] = [
     bedrooms: 2,
     city: {
       location: {
-        latitude: 54.370216,
-        longitude: 6.895168,
+        latitude: 52.370216,
+        longitude: 4.895168,
         zoom: 10,
       },
-      name: 'Paris',
+      name: 'Amsterdam',
     },
     description: 'Quiet cozy and picturesque that hides behind ',
     goods: ['Heating', 'Wi-Fi', 'Kitchen'],
@@ -67,8 +67,8 @@ export const offers: Offer[] = [
     isFavorite: false,
     isPremium: false,
     location: {
-      latitude: 53.35514938496378,
-      longitude: 5.673877537499948,
+      latitude: 52.3609553943508,
+      longitude: 4.85309666406198,
       zoom: 5,
     },
     maxAdults: 3,
@@ -82,11 +82,11 @@ export const offers: Offer[] = [
     bedrooms: 1,
     city: {
       location: {
-        latitude: 54.670216,
-        longitude: 6.495168,
+        latitude: 52.370216,
+        longitude: 4.895168,
         zoom: 6,
       },
-      name: 'Brussels',
+      name: 'Amsterdam',
     },
     description: 'Quiet cozy and',
     goods: ['Heating', 'Wi-Fi', 'Kitchen', 'Dishwasher', 'Cabel TV'],
@@ -101,8 +101,8 @@ export const offers: Offer[] = [
     isFavorite: true,
     isPremium: true,
     location: {
-      latitude: 53.75514938496378,
-      longitude: 5.675677537499948,
+      latitude: 52.3909553943508,
+      longitude: 4.929309666406198,
       zoom: 7,
     },
     maxAdults: 1,
@@ -116,11 +116,11 @@ export const offers: Offer[] = [
     bedrooms: 2,
     city: {
       location: {
-        latitude: 54.370216,
-        longitude: 6.895168,
+        latitude: 52.370216,
+        longitude: 4.895168,
         zoom: 10,
       },
-      name: 'Paris',
+      name: 'Amsterdam',
     },
     description: 'Quiet cozy and picturesque that hides behind ',
     goods: ['Heating', 'Wi-Fi', 'Kitchen'],
@@ -135,8 +135,8 @@ export const offers: Offer[] = [
     isFavorite: true,
     isPremium: false,
     location: {
-      latitude: 53.35514938496378,
-      longitude: 5.673877537499948,
+      latitude: 52.3809553943508,
+      longitude: 4.939309666406198,
       zoom: 5,
     },
     maxAdults: 3,
