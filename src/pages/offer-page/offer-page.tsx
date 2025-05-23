@@ -2,9 +2,10 @@ import { useParams } from 'react-router-dom';
 import Card from '../../components/offer-card/offer-card';
 import Header from '../../components/header';
 import Footer from '../../components/footer';
-import ReviewForm from '../../components/review-form';
+import { ReviewList } from '../../components/review';
 import { Offer } from '../../mock/mocks-types';
 import { CardType } from '../../types/offer-type';
+import { Map } from '../../components/map';
 
 type OfferPageProps = {
   offers: Offer[];
@@ -32,6 +33,19 @@ export default function OfferPage({ offers }: OfferPageProps) {
     placeCardType: offer.type.toLowerCase() as 'apartment' | 'room' | 'house' | 'hotel',
     isFavorite: offer.isFavorite,
   });
+
+  const mockReviews = [
+    {
+      id: 1,
+      user: {
+        name: 'Max',
+        avatarUrl: 'img/avatar-max.jpg',
+      },
+      rating: 4,
+      comment: 'A quiet cozy and picturesque that hides behind a a river by the unique lightness of Amsterdam. The building is green and from 18th century.',
+      date: '2019-04-24',
+    },
+  ];
 
   return (
     <div className="page">
@@ -127,47 +141,12 @@ export default function OfferPage({ offers }: OfferPageProps) {
                   </p>
                 </div>
               </div>
-              <section className="offer__reviews reviews">
-                <h2 className="reviews__title">
-                  Reviews &middot; <span className="reviews__amount">1</span>
-                </h2>
-                <ul className="reviews__list">
-                  <li className="reviews__item">
-                    <div className="reviews__user user">
-                      <div className="reviews__avatar-wrapper user__avatar-wrapper">
-                        <img
-                          className="reviews__avatar user__avatar"
-                          src="img/avatar-max.jpg"
-                          width="54"
-                          height="54"
-                          alt="Reviews avatar"
-                        />
-                      </div>
-                      <span className="reviews__user-name">Max</span>
-                    </div>
-                    <div className="reviews__info">
-                      <div className="reviews__rating rating">
-                        <div className="reviews__stars rating__stars">
-                          <span style={{ width: '80%' }}></span>
-                          <span className="visually-hidden">Rating</span>
-                        </div>
-                      </div>
-                      <p className="reviews__text">
-                        A quiet cozy and picturesque that hides behind a a river
-                        by the unique lightness of Amsterdam. The building is
-                        green and from 18th century.
-                      </p>
-                      <time className="reviews__time" dateTime="2019-04-24">
-                        April 2019
-                      </time>
-                    </div>
-                  </li>
-                </ul>
-                <ReviewForm offerId={currentOffer.id} />
-              </section>
+              <ReviewList reviews={mockReviews} offerId={currentOffer.id} />
             </div>
           </div>
-          <section className="offer__map map"></section>
+          <section className="offer__map map">
+            <Map offers={[currentOffer, ...similarOffers]} />
+          </section>
         </section>
         <div className="container">
           <section className="near-places places">
