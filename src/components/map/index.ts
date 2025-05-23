@@ -1,2 +1,1 @@
-import Map from './map';
-export default Map;
+export { Map } from './map';
