@@ -2,11 +2,14 @@ import { useEffect, useRef } from 'react';
 import { useSelector } from 'react-redux';
 import L from 'leaflet';
 import 'leaflet/dist/leaflet.css';
-import { Offer } from '../../mock/mocks-types';
+import { Offer } from '../../types/state';
 import { RootState } from '../../store';
 
 type MapProps = {
   offers: Offer[];
+  lat: number;
+  lng: number;
+  zoom: number;
 };
 
 const defaultIcon = L.icon({
@@ -21,27 +24,31 @@ const activeIcon = L.icon({
   iconAnchor: [13, 39],
 });
 
-export function Map({ offers }: MapProps) {
+export function Map({ offers, lat, lng, zoom }: MapProps) {
   const mapRef = useRef<L.Map | null>(null);
   const markersRef = useRef<L.Marker[]>([]);
   const activeOfferId = useSelector((state: RootState) => state.activeOfferId);
 
   useEffect(() => {
     if (!mapRef.current) {
-      mapRef.current = L.map('map').setView([52.3909553943508, 4.85309666406198], 10);
-
+      mapRef.current = L.map('map').setView([lat, lng], zoom);
       L.tileLayer('https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png', {
         attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors &copy; <a href="https://carto.com/attributions">CARTO</a>',
       }).addTo(mapRef.current);
     }
-
     return () => {
       if (mapRef.current) {
         mapRef.current.remove();
         mapRef.current = null;
       }
     };
-  }, []);
+  }, [lat, lng, zoom]);
+
+  useEffect(() => {
+    if (mapRef.current) {
+      mapRef.current.setView([lat, lng], zoom);
+    }
+  }, [lat, lng, zoom]);
 
   useEffect(() => {
     if (!mapRef.current) {
