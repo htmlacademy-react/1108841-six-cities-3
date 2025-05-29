@@ -1,5 +1,5 @@
 import { Routes, Route, BrowserRouter } from 'react-router-dom';
-import { useState } from 'react';
+import { useEffect } from 'react';
 import { APP_ROUTE } from '../../const';
 import MainPage from '../../pages/main-page';
 import NotFoundPage from '../../pages/404-page';
@@ -9,10 +9,23 @@ import LoginPage from '../../pages/login-page';
 import PrivateRoute from '../private/private';
 import { useSelector } from 'react-redux';
 import { RootState } from '../../store';
+import { checkAuth } from '../../store/thunks';
+import { AuthorizationStatus } from '../../types/state';
+import { useAppDispatch } from '../../hooks/use-app-dispatch';
+import { Offer } from '../../types/state';
 
 function App() {
-  const [isAuthenticated] = useState(false);
+  const dispatch = useAppDispatch();
+  const authorizationStatus = useSelector((state: RootState) => state.authorizationStatus);
   const offers = useSelector((state: RootState) => state.offers);
+
+  useEffect(() => {
+    dispatch(checkAuth());
+  }, [dispatch]);
+
+  if (authorizationStatus === AuthorizationStatus.Unknown) {
+    return null;
+  }
 
   return (
     <BrowserRouter>
@@ -25,14 +38,14 @@ function App() {
         <Route
           element={
             <PrivateRoute
-              isAuthenticated={isAuthenticated}
+              authorizationStatus={authorizationStatus}
               redirectPath={APP_ROUTE.LOGIN}
             />
           }
         >
           <Route
             path={APP_ROUTE.FAVORITES}
-            element={<FavoritesPage offers={offers.filter((offer) => offer.isFavorite)} />}
+            element={<FavoritesPage offers={offers.filter((offer: Offer) => offer.isFavorite)} />}
           />
         </Route>
         <Route path={APP_ROUTE.OFFER} element={<OfferPage offers={offers} />} />

@@ -1,17 +1,17 @@
 import { Navigate, Outlet } from 'react-router-dom';
-import { APP_ROUTE } from '../../const';
+import { AuthorizationStatus } from '../../types/state';
 
-interface PrivateRouteProps {
-  isAuthenticated: boolean;
-  redirectPath?: string;
-}
+type PrivateRouteProps = {
+  authorizationStatus: AuthorizationStatus;
+  redirectPath: string;
+};
 
-const PrivateRoute = ({ isAuthenticated, redirectPath = APP_ROUTE.LOGIN }: PrivateRouteProps) => {
-  if (!isAuthenticated) {
+function PrivateRoute({ authorizationStatus, redirectPath }: PrivateRouteProps): JSX.Element {
+  if (authorizationStatus !== AuthorizationStatus.Auth) {
     return <Navigate to={redirectPath} replace />;
   }
 
   return <Outlet />;
-};
+}
 
 export default PrivateRoute;

@@ -12,7 +12,7 @@ type OfferPageProps = {
 
 export default function OfferPage({ offers }: OfferPageProps) {
   const { id } = useParams<{ id: string }>();
-  const currentOffer = offers.find((offer) => offer.id === Number(id));
+  const currentOffer = offers.find((offer) => offer.id === id);
 
   if (!currentOffer) {
     return <div>Предложение не найдено</div>;
@@ -25,12 +25,13 @@ export default function OfferPage({ offers }: OfferPageProps) {
   const mapOfferToCard = (offer: Offer): CardType => ({
     id: offer.id,
     img: offer.previewImage,
-    rating: Math.floor(offer.rating),
-    premiumMark: offer.isPremium,
-    priceValue: String(offer.price),
-    placeCardName: offer.title,
-    placeCardType: offer.type.toLowerCase() as 'apartment' | 'room' | 'house' | 'hotel',
+    rating: offer.rating,
+    isPremium: offer.isPremium,
+    price: offer.price,
+    title: offer.title,
+    type: offer.type,
     isFavorite: offer.isFavorite,
+    location: offer.location
   });
 
   const mockReviews = [
@@ -145,10 +146,11 @@ export default function OfferPage({ offers }: OfferPageProps) {
           </div>
           <section className="offer__map map">
             <Map
-              offers={[currentOffer, ...similarOffers]}
+              offers={offers}
               lat={currentOffer.city.location.latitude}
               lng={currentOffer.city.location.longitude}
               zoom={currentOffer.city.location.zoom}
+              activeOfferId={currentOffer.id}
             />
           </section>
         </section>

@@ -1,7 +1,7 @@
 import { ChangeEvent, FormEvent, useState, useEffect } from 'react';
 
-type ReviewFormProps = {
-  offerId: number;
+export type ReviewFormProps = {
+  offerId: string;
 };
 
 type ReviewFormData = {

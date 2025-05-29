@@ -2,9 +2,9 @@ import { Review } from '../../types/review-type';
 import ReviewItem from './review';
 import ReviewForm from '../review-form';
 
-type ReviewListProps = {
+export type ReviewListProps = {
   reviews: Review[];
-  offerId: number;
+  offerId: string;
 };
 
 function ReviewList({ reviews, offerId }: ReviewListProps) {

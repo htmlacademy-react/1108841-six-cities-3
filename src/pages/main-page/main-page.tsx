@@ -7,7 +7,7 @@ import { Map } from '../../components/map/map';
 import { CitiesList } from '../../components/cities-list/cities-list';
 import { RootState, useAppDispatch } from '../../store';
 import { Offer, SortType } from '../../types/state';
-import { fetchOffers } from '../../store/action';
+import { fetchOffers } from '../../store/thunks';
 
 function sortOffers(offers: Offer[], sort: SortType): Offer[] {
   if (sort === 'PriceLowToHigh') {
@@ -37,6 +37,7 @@ function MainPage() {
   const sort = useSelector((state: RootState) => state.sort);
   const isOffersLoading = useSelector((state: RootState) => state.isOffersLoading);
   const offersError = useSelector((state: RootState) => state.offersError);
+  const activeOfferId = useSelector((state: RootState) => state.activeOfferId);
 
   useEffect(() => {
     dispatch(fetchOffers());
@@ -75,7 +76,7 @@ function MainPage() {
                 lat={city.location.latitude}
                 lng={city.location.longitude}
                 zoom={city.location.zoom}
-                key={city.name}
+                activeOfferId={activeOfferId}
               />
             </div>
           </div>
