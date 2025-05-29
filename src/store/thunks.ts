@@ -1,7 +1,6 @@
 import { ThunkActionResult } from './action';
 import { setAuthorizationStatus, setUser, setOffers, setOffersLoading, setOffersError } from './action';
-import { AuthorizationStatus, AuthInfo, Offer } from '../types/state';
-import { saveToken, dropToken } from '../services/token';
+import { AuthorizationStatus, Offer } from '../types/state';
 
 export const fetchOffers = (): ThunkActionResult =>
   async (dispatch, _getState, api) => {
@@ -18,29 +17,28 @@ export const fetchOffers = (): ThunkActionResult =>
   };
 
 export const checkAuth = (): ThunkActionResult =>
-  async (dispatch, _getState, api) => {
-    try {
-      const { data } = await api.get<AuthInfo>('/login');
-      dispatch(setAuthorizationStatus(AuthorizationStatus.Auth));
-      dispatch(setUser(data));
-    } catch {
-      dispatch(setAuthorizationStatus(AuthorizationStatus.NoAuth));
-      dispatch(setUser(null));
-    }
+  async (dispatch) => {
+    await Promise.resolve();
+    dispatch(setAuthorizationStatus(AuthorizationStatus.NoAuth));
+    dispatch(setUser(null));
   };
 
-export const login = (email: string, password: string): ThunkActionResult =>
-  async (dispatch, _getState, api) => {
-    const { data } = await api.post<AuthInfo & { token: string }>('/login', { email, password });
-    saveToken(data.token);
+export const login = (email: string): ThunkActionResult =>
+  async (dispatch) => {
+    await Promise.resolve();
     dispatch(setAuthorizationStatus(AuthorizationStatus.Auth));
-    dispatch(setUser(data));
+    dispatch(setUser({
+      id: 1,
+      email,
+      name: 'Mock User',
+      avatarUrl: 'img/avatar.svg',
+      isPro: false,
+    }));
   };
 
 export const logout = (): ThunkActionResult =>
-  async (dispatch, _getState, api) => {
-    await api.delete('/logout');
-    dropToken();
+  async (dispatch) => {
+    await Promise.resolve();
     dispatch(setAuthorizationStatus(AuthorizationStatus.NoAuth));
     dispatch(setUser(null));
   };

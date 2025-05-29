@@ -13,7 +13,7 @@ function LoginPage(): JSX.Element {
 
   const handleSubmit = (evt: FormEvent<HTMLFormElement>) => {
     evt.preventDefault();
-    dispatch(login(email, password))
+    dispatch(login(email))
       .then(() => {
         navigate(APP_ROUTE.MAIN);
       })
