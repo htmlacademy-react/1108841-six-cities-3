@@ -1,4 +1,5 @@
-import { useState } from 'react';
+import { useDispatch } from 'react-redux';
+import { setActiveOffer } from '../../store/action';
 import Card from './offer-card';
 import { Offer } from '../../mock/mocks-types';
 import { CardType } from '../../types/offer-type';
@@ -8,14 +9,14 @@ type OfferListProps = {
 };
 
 function CardListMain({ offers }: OfferListProps) {
-  const [, setActiveOffer] = useState<Offer | null>(null);
+  const dispatch = useDispatch();
 
   const handleCardHover = (offer: Offer) => {
-    setActiveOffer(offer);
+    dispatch(setActiveOffer(offer.id));
   };
 
   const handleCardLeave = () => {
-    setActiveOffer(null);
+    dispatch(setActiveOffer(null));
   };
 
   const mapOffersToCardType = (offer: Offer): CardType => ({

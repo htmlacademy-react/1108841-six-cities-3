@@ -1,11 +1,12 @@
 import { useEffect, useRef } from 'react';
+import { useSelector } from 'react-redux';
 import L from 'leaflet';
 import 'leaflet/dist/leaflet.css';
 import { Offer } from '../../mock/mocks-types';
+import { RootState } from '../../store';
 
 type MapProps = {
   offers: Offer[];
-  selectedOfferId?: number;
 };
 
 const defaultIcon = L.icon({
@@ -15,14 +16,15 @@ const defaultIcon = L.icon({
 });
 
 const activeIcon = L.icon({
-  iconUrl: 'https://unpkg.com/leaflet@1.7.1/dist/images/marker-icon-2x.png',
+  iconUrl: '/img/pin-active.svg',
   iconSize: [27, 39],
   iconAnchor: [13, 39],
 });
 
-export function Map({ offers, selectedOfferId }: MapProps) {
+export function Map({ offers }: MapProps) {
   const mapRef = useRef<L.Map | null>(null);
   const markersRef = useRef<L.Marker[]>([]);
+  const activeOfferId = useSelector((state: RootState) => state.activeOfferId);
 
   useEffect(() => {
     if (!mapRef.current) {
@@ -52,13 +54,13 @@ export function Map({ offers, selectedOfferId }: MapProps) {
     offers.forEach((offer) => {
       const marker = L.marker(
         [offer.location.latitude, offer.location.longitude],
-        { icon: offer.id === selectedOfferId ? activeIcon : defaultIcon }
+        { icon: offer.id === activeOfferId ? activeIcon : defaultIcon }
       ).addTo(mapRef.current!);
 
       marker.bindPopup(offer.title);
       markersRef.current.push(marker);
     });
-  }, [offers, selectedOfferId]);
+  }, [offers, activeOfferId]);
 
   return <section className="cities__map map" id="map" />;
 }
