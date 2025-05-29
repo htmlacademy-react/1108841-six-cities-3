@@ -7,20 +7,19 @@ import FavoritesPage from '../../pages/favorites-page';
 import OfferPage from '../../pages/offer-page';
 import LoginPage from '../../pages/login-page';
 import PrivateRoute from '../private/private';
-import { Offer } from '../../mock/mocks-types';
+import { useSelector } from 'react-redux';
+import { RootState } from '../../store';
 
-type AppProps = {
-  offers: Offer[];
-};
-
-function App({ offers }: AppProps) {
+function App() {
   const [isAuthenticated] = useState(false);
+  const offers = useSelector((state: RootState) => state.offers);
+
   return (
     <BrowserRouter>
       <Routes>
         <Route
           path={APP_ROUTE.MAIN}
-          element={<MainPage offers={offers} />}
+          element={<MainPage />}
         />
         <Route path={APP_ROUTE.LOGIN} element={<LoginPage />} />
         <Route
