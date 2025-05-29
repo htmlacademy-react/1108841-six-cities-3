@@ -35,7 +35,11 @@ export type Offer = {
   images: string[];
 };
 
+export type SortType = 'Popular' | 'PriceLowToHigh' | 'PriceHighToLow' | 'TopRated';
+
 export type State = {
   city: City;
   offers: Offer[];
+  sort: SortType;
+  activeOfferId: number | null;
 };

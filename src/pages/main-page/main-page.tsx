@@ -1,15 +1,31 @@
 import { useSelector } from 'react-redux';
 import Header from '../../components/header';
-import Footer from '../../components/footer';
 import CardListMain from '../../components/offer-card';
-import Sort from '../../components/sort';
+import { SortOptions } from '../../components/sort-options/sort-options';
 import { Map } from '../../components/map/map';
 import { CitiesList } from '../../components/cities-list/cities-list';
 import { RootState } from '../../store';
+import { Offer, SortType } from '../../types/state';
+
+function sortOffers(offers: Offer[], sort: SortType): Offer[] {
+  if (sort === 'PriceLowToHigh') {
+    return [...offers].sort((a, b) => a.price - b.price);
+  }
+  if (sort === 'PriceHighToLow') {
+    return [...offers].sort((a, b) => b.price - a.price);
+  }
+  if (sort === 'TopRated') {
+    return [...offers].sort((a, b) => b.rating - a.rating);
+  }
+  return offers;
+}
 
 function MainPage() {
-  const { city, offers } = useSelector((state: RootState) => state);
+  const city = useSelector((state: RootState) => state.city);
+  const offers = useSelector((state: RootState) => state.offers);
+  const sort = useSelector((state: RootState) => state.sort);
   const filteredOffers = offers.filter((offer) => offer.city.name === city.name);
+  const sortedOffers = sortOffers(filteredOffers, sort);
 
   return (
     <div className="page page--gray page--main">
@@ -22,18 +38,17 @@ function MainPage() {
             <section className="cities__places places">
               <h2 className="visually-hidden">Places</h2>
               <b className="places__found">
-                {filteredOffers.length} places to stay in {city.name}
+                {sortedOffers.length} places to stay in {city.name}
               </b>
-              <Sort />
-              <CardListMain offers={filteredOffers} />
+              <SortOptions />
+              <CardListMain offers={sortedOffers} />
             </section>
             <div className="cities__right-section">
-              <Map offers={filteredOffers} />
+              <Map offers={sortedOffers} />
             </div>
           </div>
         </div>
       </main>
-      <Footer />
     </div>
   );
 }

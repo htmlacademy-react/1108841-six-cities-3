@@ -1,7 +1,6 @@
 import { useParams } from 'react-router-dom';
 import Card from '../../components/offer-card/offer-card';
 import Header from '../../components/header';
-import Footer from '../../components/footer';
 import { ReviewList } from '../../components/review';
 import { Offer } from '../../mock/mocks-types';
 import { CardType } from '../../types/offer-type';
@@ -161,7 +160,6 @@ export default function OfferPage({ offers }: OfferPageProps) {
           </section>
         </div>
       </main>
-      <Footer />
     </div>
   );
 }
