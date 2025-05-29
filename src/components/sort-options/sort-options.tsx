@@ -18,7 +18,9 @@ export function SortOptions() {
   const ref = useRef<HTMLFormElement>(null);
 
   useEffect(() => {
-    if (!opened) return;
+    if (!opened) {
+      return;
+    }
     const handleClick = (e: MouseEvent) => {
       if (ref.current && !ref.current.contains(e.target as Node)) {
         setOpened(false);
