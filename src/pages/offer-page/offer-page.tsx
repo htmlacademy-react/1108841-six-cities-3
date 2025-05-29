@@ -5,6 +5,8 @@ import { ReviewList } from '../../components/review';
 import { Offer } from '../../types/state';
 import { CardType } from '../../types/offer-type';
 import { Map } from '../../components/map';
+import { useSelector } from 'react-redux';
+import { RootState } from '../../store';
 
 type OfferPageProps = {
   offers: Offer[];
@@ -12,7 +14,13 @@ type OfferPageProps = {
 
 export default function OfferPage({ offers }: OfferPageProps) {
   const { id } = useParams<{ id: string }>();
-  const currentOffer = offers.find((offer) => offer.id === Number(id));
+  const isOffersLoading = useSelector((state: RootState) => state.isOffersLoading);
+
+  if (isOffersLoading || offers.length === 0) {
+    return <div>Загрузка...</div>;
+  }
+
+  const currentOffer = offers.find((offer) => offer.id === id);
 
   if (!currentOffer) {
     return <div>Предложение не найдено</div>;
@@ -25,12 +33,13 @@ export default function OfferPage({ offers }: OfferPageProps) {
   const mapOfferToCard = (offer: Offer): CardType => ({
     id: offer.id,
     img: offer.previewImage,
-    rating: Math.floor(offer.rating),
-    premiumMark: offer.isPremium,
-    priceValue: String(offer.price),
-    placeCardName: offer.title,
-    placeCardType: offer.type.toLowerCase() as 'apartment' | 'room' | 'house' | 'hotel',
+    rating: offer.rating,
+    isPremium: offer.isPremium,
+    price: offer.price,
+    title: offer.title,
+    type: offer.type,
     isFavorite: offer.isFavorite,
+    location: offer.location
   });
 
   const mockReviews = [
@@ -53,7 +62,7 @@ export default function OfferPage({ offers }: OfferPageProps) {
         <section className="offer">
           <div className="offer__gallery-container container">
             <div className="offer__gallery">
-              {currentOffer.images.slice(0, 6).map((image) => (
+              {currentOffer?.images?.slice(0, 6).map((image) => (
                 <div className="offer__image-wrapper" key={`image-${image}`}>
                   <img
                     className="offer__image"
@@ -110,7 +119,7 @@ export default function OfferPage({ offers }: OfferPageProps) {
               <div className="offer__inside">
                 <h2 className="offer__inside-title">What&apos;s inside</h2>
                 <ul className="offer__inside-list">
-                  {currentOffer.goods.map((good) => (
+                  {currentOffer?.goods?.map((good) => (
                     <li className="offer__inside-item" key={good}>
                       {good}
                     </li>
@@ -120,17 +129,17 @@ export default function OfferPage({ offers }: OfferPageProps) {
               <div className="offer__host">
                 <h2 className="offer__host-title">Meet the host</h2>
                 <div className="offer__host-user user">
-                  <div className={`offer__avatar-wrapper ${currentOffer.host.isPro ? 'offer__avatar-wrapper--pro' : ''} user__avatar-wrapper`}>
+                  <div className={`offer__avatar-wrapper ${currentOffer?.host?.isPro ? 'offer__avatar-wrapper--pro' : ''} user__avatar-wrapper`}>
                     <img
                       className="offer__avatar user__avatar"
-                      src={currentOffer.host.avatarUrl}
+                      src={currentOffer?.host?.avatarUrl || '/img/avatar.svg'}
                       width="74"
                       height="74"
                       alt="Host avatar"
                     />
                   </div>
-                  <span className="offer__user-name">{currentOffer.host.name}</span>
-                  {currentOffer.host.isPro && (
+                  <span className="offer__user-name">{currentOffer?.host?.name}</span>
+                  {currentOffer?.host?.isPro && (
                     <span className="offer__user-status">Pro</span>
                   )}
                 </div>
@@ -145,10 +154,11 @@ export default function OfferPage({ offers }: OfferPageProps) {
           </div>
           <section className="offer__map map">
             <Map
-              offers={[currentOffer, ...similarOffers]}
+              offers={offers}
               lat={currentOffer.city.location.latitude}
               lng={currentOffer.city.location.longitude}
               zoom={currentOffer.city.location.zoom}
+              activeOfferId={currentOffer.id}
             />
           </section>
         </section>

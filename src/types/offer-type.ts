@@ -1,10 +1,15 @@
 export type CardType = {
-  id: number;
+  id: string;
   img: string;
-  premiumMark: boolean;
-  priceValue: string;
+  price: number;
   rating: number;
-  placeCardName: string;
-  placeCardType: 'apartment' | 'room' | 'house' | 'hotel';
+  title: string;
+  type: string;
+  isPremium: boolean;
   isFavorite: boolean;
+  location: {
+    latitude: number;
+    longitude: number;
+    zoom: number;
+  };
 };

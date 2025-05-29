@@ -22,12 +22,13 @@ function CardListMain({ offers }: OfferListProps) {
   const mapOffersToCardType = (offer: Offer): CardType => ({
     id: offer.id,
     img: offer.previewImage,
-    rating: Math.floor(offer.rating),
-    premiumMark: offer.isPremium,
-    priceValue: String(offer.price),
-    placeCardName: offer.title,
-    placeCardType: offer.type.toLowerCase() as 'apartment' | 'room' | 'house' | 'hotel',
+    rating: offer.rating,
+    isPremium: offer.isPremium,
+    price: offer.price,
+    title: offer.title,
+    type: offer.type,
     isFavorite: offer.isFavorite,
+    location: offer.location
   });
 
   return (

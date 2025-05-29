@@ -9,7 +9,7 @@ type CardPropsType = {
 function Card({ card }: CardPropsType) {
   return (
     <article className="cities__card place-card">
-      {card.premiumMark === true && (
+      {card.isPremium === true && (
         <div className="place-card__mark">
           <span>Premium</span>
         </div>
@@ -28,7 +28,7 @@ function Card({ card }: CardPropsType) {
       <div className="place-card__info">
         <div className="place-card__price-wrapper">
           <div className="place-card__price">
-            <b className="place-card__price-value">&euro;{card.priceValue}</b>
+            <b className="place-card__price-value">&euro;{card.price}</b>
             <span className="place-card__price-text">&#47;&nbsp;night</span>
           </div>
           <button
@@ -48,9 +48,9 @@ function Card({ card }: CardPropsType) {
           </div>
         </div>
         <h2 className="place-card__name">
-          <Link to={`/offer/${card.id}`}>{card.placeCardName}</Link>
+          <Link to={`/offer/${card.id}`}>{card.title}</Link>
         </h2>
-        <p className="place-card__type">{card.placeCardType}</p>
+        <p className="place-card__type">{card.type}</p>
       </div>
     </article>
   );

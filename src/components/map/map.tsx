@@ -1,15 +1,14 @@
 import { useEffect, useRef } from 'react';
-import { useSelector } from 'react-redux';
 import L from 'leaflet';
 import 'leaflet/dist/leaflet.css';
 import { Offer } from '../../types/state';
-import { RootState } from '../../store';
 
-type MapProps = {
+export type MapProps = {
   offers: Offer[];
   lat: number;
   lng: number;
   zoom: number;
+  activeOfferId: string | null;
 };
 
 const defaultIcon = L.icon({
@@ -24,10 +23,9 @@ const activeIcon = L.icon({
   iconAnchor: [13, 39],
 });
 
-export function Map({ offers, lat, lng, zoom }: MapProps) {
+export function Map({ offers, lat, lng, zoom, activeOfferId }: MapProps) {
   const mapRef = useRef<L.Map | null>(null);
   const markersRef = useRef<L.Marker[]>([]);
-  const activeOfferId = useSelector((state: RootState) => state.activeOfferId);
 
   useEffect(() => {
     if (!mapRef.current) {

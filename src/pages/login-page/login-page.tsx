@@ -1,16 +1,46 @@
-import Header from '../../components/header';
-import { Link } from 'react-router-dom';
+import { FormEvent, useState } from 'react';
+import { useNavigate, Link } from 'react-router-dom';
+import { useDispatch } from 'react-redux';
+import { login } from '../../store/thunks';
 import { APP_ROUTE } from '../../const';
+import { AppDispatch } from '../../store';
 
-function LoginPage() {
+function LoginPage(): JSX.Element {
+  const dispatch: AppDispatch = useDispatch();
+  const navigate = useNavigate();
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
+
+  const handleSubmit = (evt: FormEvent<HTMLFormElement>) => {
+    evt.preventDefault();
+    dispatch(login(email))
+      .then(() => {
+        navigate(APP_ROUTE.MAIN);
+      })
+      .catch(() => {
+        // Ошибка уже обработана в thunk
+      });
+  };
+
   return (
     <div className="page page--gray page--login">
-      <Header />
+      <header className="header">
+        <div className="container">
+          <div className="header__wrapper">
+            <div className="header__left">
+              <Link className="header__logo-link" to={APP_ROUTE.MAIN}>
+                <img className="header__logo" src="img/logo.svg" alt="6 cities logo" width="81" height="41" />
+              </Link>
+            </div>
+          </div>
+        </div>
+      </header>
+
       <main className="page__main page__main--login">
         <div className="page__login-container container">
           <section className="login">
             <h1 className="login__title">Sign in</h1>
-            <form className="login__form form" action="#" method="post">
+            <form className="login__form form" action="#" method="post" onSubmit={handleSubmit}>
               <div className="login__input-wrapper form__input-wrapper">
                 <label className="visually-hidden">E-mail</label>
                 <input
@@ -19,6 +49,8 @@ function LoginPage() {
                   name="email"
                   placeholder="Email"
                   required
+                  value={email}
+                  onChange={(evt) => setEmail(evt.target.value)}
                 />
               </div>
               <div className="login__input-wrapper form__input-wrapper">
@@ -29,12 +61,11 @@ function LoginPage() {
                   name="password"
                   placeholder="Password"
                   required
+                  value={password}
+                  onChange={(evt) => setPassword(evt.target.value)}
                 />
               </div>
-              <button
-                className="login__submit form__submit button"
-                type="submit"
-              >
+              <button className="login__submit form__submit button" type="submit">
                 Sign in
               </button>
             </form>
