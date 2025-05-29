@@ -2,7 +2,7 @@ import { useParams } from 'react-router-dom';
 import Card from '../../components/offer-card/offer-card';
 import Header from '../../components/header';
 import { ReviewList } from '../../components/review';
-import { Offer } from '../../mock/mocks-types';
+import { Offer } from '../../types/state';
 import { CardType } from '../../types/offer-type';
 import { Map } from '../../components/map';
 
@@ -144,7 +144,12 @@ export default function OfferPage({ offers }: OfferPageProps) {
             </div>
           </div>
           <section className="offer__map map">
-            <Map offers={[currentOffer, ...similarOffers]} />
+            <Map
+              offers={[currentOffer, ...similarOffers]}
+              lat={currentOffer.city.location.latitude}
+              lng={currentOffer.city.location.longitude}
+              zoom={currentOffer.city.location.zoom}
+            />
           </section>
         </section>
         <div className="container">

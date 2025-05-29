@@ -1,7 +1,7 @@
 import { Link } from 'react-router-dom';
 import Footer from '../../components/footer';
 import Header from '../../components/header';
-import { Offer } from '../../mock/mocks-types';
+import { Offer } from '../../types/state';
 
 type FavoritePageProps = {
   offers: Offer[];

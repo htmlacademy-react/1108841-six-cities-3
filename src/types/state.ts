@@ -42,4 +42,6 @@ export type State = {
   offers: Offer[];
   sort: SortType;
   activeOfferId: number | null;
+  isOffersLoading: boolean;
+  offersError: string | null;
 };

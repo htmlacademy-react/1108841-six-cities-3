@@ -1,7 +1,7 @@
 import { useDispatch } from 'react-redux';
 import { setActiveOffer } from '../../store/action';
 import Card from './offer-card';
-import { Offer } from '../../mock/mocks-types';
+import { Offer } from '../../types/state';
 import { CardType } from '../../types/offer-type';
 
 type OfferListProps = {
