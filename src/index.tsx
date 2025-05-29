@@ -1,7 +1,12 @@
 import React from 'react';
 import ReactDOM from 'react-dom/client';
+import { Provider } from 'react-redux';
 import App from './components/app';
+import { store } from './store';
+import { setOffers } from './store/action';
 import { offers } from './mock/offers';
+
+store.dispatch(setOffers(offers));
 
 const root = ReactDOM.createRoot(
   document.getElementById('root') as HTMLElement
@@ -9,6 +14,8 @@ const root = ReactDOM.createRoot(
 
 root.render(
   <React.StrictMode>
-    <App offers={offers} />
+    <Provider store={store}>
+      <App />
+    </Provider>
   </React.StrictMode>
 );
