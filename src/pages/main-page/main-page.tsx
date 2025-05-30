@@ -6,21 +6,8 @@ import { SortOptions } from '../../components/sort-options/sort-options';
 import { Map } from '../../components/map/map';
 import { CitiesList } from '../../components/cities-list/cities-list';
 import { RootState, useAppDispatch } from '../../store';
-import { Offer, SortType } from '../../types/state';
 import { fetchOffers } from '../../store/thunks';
-
-function sortOffers(offers: Offer[], sort: SortType): Offer[] {
-  if (sort === 'PriceLowToHigh') {
-    return [...offers].sort((a, b) => a.price - b.price);
-  }
-  if (sort === 'PriceHighToLow') {
-    return [...offers].sort((a, b) => b.price - a.price);
-  }
-  if (sort === 'TopRated') {
-    return [...offers].sort((a, b) => b.rating - a.rating);
-  }
-  return offers;
-}
+import { sortedOffersSelector, citySelector } from '../../store/selectors';
 
 function Spinner() {
   return <div style={{textAlign: 'center', padding: 40}}>Загрузка...</div>;
@@ -32,12 +19,11 @@ function ErrorBlock({ message }: { message: string }) {
 
 function MainPage() {
   const dispatch = useAppDispatch();
-  const city = useSelector((state: RootState) => state.city);
-  const offers = useSelector((state: RootState) => state.offers);
-  const sort = useSelector((state: RootState) => state.sort);
-  const isOffersLoading = useSelector((state: RootState) => state.isOffersLoading);
-  const offersError = useSelector((state: RootState) => state.offersError);
-  const activeOfferId = useSelector((state: RootState) => state.activeOfferId);
+  const city = useSelector(citySelector);
+  const sortedOffers = useSelector(sortedOffersSelector);
+  const isOffersLoading = useSelector((state: RootState) => state.offers.isOffersLoading);
+  const offersError = useSelector((state: RootState) => state.offers.offersError);
+  const activeOfferId = useSelector((state: RootState) => state.offers.activeOfferId);
 
   useEffect(() => {
     dispatch(fetchOffers());
@@ -50,9 +36,6 @@ function MainPage() {
   if (offersError) {
     return <ErrorBlock message={offersError} />;
   }
-
-  const filteredOffers = offers.filter((offer) => offer.city.name === city.name);
-  const sortedOffers = sortOffers(filteredOffers, sort);
 
   return (
     <div className="page page--gray page--main">

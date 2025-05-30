@@ -12,12 +12,10 @@ import { RootState } from '../../store';
 import { checkAuth } from '../../store/thunks';
 import { AuthorizationStatus } from '../../types/state';
 import { useAppDispatch } from '../../hooks/use-app-dispatch';
-import { Offer } from '../../types/state';
 
 function App() {
   const dispatch = useAppDispatch();
-  const authorizationStatus = useSelector((state: RootState) => state.authorizationStatus);
-  const offers = useSelector((state: RootState) => state.offers);
+  const authorizationStatus = useSelector((state: RootState) => state.user.authorizationStatus);
 
   useEffect(() => {
     dispatch(checkAuth());
@@ -45,7 +43,7 @@ function App() {
         >
           <Route
             path={APP_ROUTE.FAVORITES}
-            element={<FavoritesPage offers={offers.filter((offer: Offer) => offer.isFavorite)} />}
+            element={<FavoritesPage />}
           />
         </Route>
         <Route path={APP_ROUTE.OFFER} element={<OfferPage />} />

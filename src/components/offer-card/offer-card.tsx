@@ -1,6 +1,7 @@
 import { Link } from 'react-router-dom';
 import { getRating } from '../../utils/utils';
 import { CardType } from '../../types/offer-type';
+import PropTypes from 'prop-types';
 
 type CardPropsType = {
   card: CardType;
@@ -55,5 +56,19 @@ function Card({ card }: CardPropsType) {
     </article>
   );
 }
+
+Card.propTypes = {
+  card: PropTypes.shape({
+    id: PropTypes.string.isRequired,
+    img: PropTypes.string.isRequired,
+    rating: PropTypes.number.isRequired,
+    isPremium: PropTypes.bool.isRequired,
+    price: PropTypes.number.isRequired,
+    title: PropTypes.string.isRequired,
+    type: PropTypes.string.isRequired,
+    isFavorite: PropTypes.bool.isRequired,
+    location: PropTypes.object.isRequired,
+  }).isRequired,
+};
 
 export default Card;

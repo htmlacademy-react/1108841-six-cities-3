@@ -8,8 +8,8 @@ import { useAppDispatch } from '../../hooks/use-app-dispatch';
 
 function Header(): JSX.Element {
   const dispatch = useAppDispatch();
-  const authorizationStatus = useSelector((state: RootState) => state.authorizationStatus);
-  const user = useSelector((state: RootState) => state.user);
+  const authorizationStatus = useSelector((state: RootState) => state.user.authorizationStatus);
+  const user = useSelector((state: RootState) => state.user.user);
 
   const handleLogout = () => {
     dispatch(logout());

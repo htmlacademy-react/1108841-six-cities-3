@@ -1,6 +1,7 @@
 import { Review } from '../../types/review-type';
 import ReviewItem from './review';
 import ReviewForm from '../review-form';
+import PropTypes from 'prop-types';
 
 export type ReviewListProps = {
   reviews: Review[];
@@ -22,5 +23,10 @@ function ReviewList({ reviews, offerId }: ReviewListProps) {
     </section>
   );
 }
+
+ReviewList.propTypes = {
+  reviews: PropTypes.array.isRequired,
+  offerId: PropTypes.string.isRequired,
+};
 
 export default ReviewList;

@@ -1,15 +1,14 @@
 import { Link } from 'react-router-dom';
 import Footer from '../../components/footer';
 import Header from '../../components/header';
+import { useSelector } from 'react-redux';
+import { favoriteOffersSelector } from '../../store/selectors';
 import { Offer } from '../../types/state';
 
-type FavoritePageProps = {
-  offers: Offer[];
-};
-
-function FavoritePage({ offers }: FavoritePageProps) {
+function FavoritePage() {
+  const favoriteOffers = useSelector(favoriteOffersSelector);
   // Группировка предложений по городам
-  const offersByCity = offers.reduce<Record<string, Offer[]>>((acc, offer) => {
+  const offersByCity = favoriteOffers.reduce<Record<string, Offer[]>>((acc, offer) => {
     const cityName = offer.city.name;
     if (!acc[cityName]) {
       acc[cityName] = [];

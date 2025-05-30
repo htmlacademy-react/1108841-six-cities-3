@@ -7,18 +7,19 @@ import { CardType } from '../../types/offer-type';
 import { Map } from '../../components/map';
 import { useAppDispatch, useAppSelector } from '../../store';
 import { fetchOfferById, fetchNearbyOffersById, fetchReviewsById } from '../../store/thunks';
+import { sortedReviewsSelector } from '../../store/selectors';
 
 export default function OfferPage() {
   const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
   const dispatch = useAppDispatch();
-  const currentOffer = useAppSelector((state) => state.currentOffer);
-  const nearbyOffers = useAppSelector((state) => state.nearbyOffers);
-  const reviews = useAppSelector((state) => state.reviews);
-  const isOffersLoading = useAppSelector((state) => state.isOffersLoading);
-  const isReviewsLoading = useAppSelector((state) => state.isReviewsLoading);
-  const offersError = useAppSelector((state) => state.offersError);
-  const reviewsError = useAppSelector((state) => state.reviewsError);
+  const currentOffer = useAppSelector((state) => state.offers.currentOffer);
+  const nearbyOffers = useAppSelector((state) => state.offers.nearbyOffers);
+  const reviews = useAppSelector(sortedReviewsSelector);
+  const isOffersLoading = useAppSelector((state) => state.offers.isOffersLoading);
+  const isReviewsLoading = useAppSelector((state) => state.reviews.isReviewsLoading);
+  const offersError = useAppSelector((state) => state.offers.offersError);
+  const reviewsError = useAppSelector((state) => state.reviews.reviewsError);
 
   useEffect(() => {
     if (id) {
