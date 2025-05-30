@@ -5,11 +5,13 @@ import { logout } from '../../store/thunks';
 import { APP_ROUTE } from '../../const';
 import { AuthorizationStatus } from '../../types/state';
 import { useAppDispatch } from '../../hooks/use-app-dispatch';
+import { favoriteOffersSelector } from '../../store/selectors';
 
 function Header(): JSX.Element {
   const dispatch = useAppDispatch();
   const authorizationStatus = useSelector((state: RootState) => state.user.authorizationStatus);
   const user = useSelector((state: RootState) => state.user.user);
+  const favoriteCount = useSelector(favoriteOffersSelector).length;
 
   const handleLogout = () => {
     dispatch(logout());
@@ -44,7 +46,7 @@ function Header(): JSX.Element {
                   </li>
                   <li className="header__nav-item">
                     <Link className="header__nav-link" to={APP_ROUTE.FAVORITES}>
-                      <span className="header__favorite-count">3</span>
+                      <span className="header__favorite-count">{favoriteCount}</span>
                     </Link>
                   </li>
                   <li className="header__nav-item">

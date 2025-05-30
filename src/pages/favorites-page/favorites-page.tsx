@@ -4,8 +4,15 @@ import Header from '../../components/header';
 import { useSelector } from 'react-redux';
 import { favoriteOffersSelector } from '../../store/selectors';
 import { Offer } from '../../types/state';
+import { useEffect } from 'react';
+import { useAppDispatch } from '../../store';
+import { fetchFavorites } from '../../store/thunks';
 
 function FavoritePage() {
+  const dispatch = useAppDispatch();
+  useEffect(() => {
+    dispatch(fetchFavorites());
+  }, [dispatch]);
   const favoriteOffers = useSelector(favoriteOffersSelector);
   // Группировка предложений по городам
   const offersByCity = favoriteOffers.reduce<Record<string, Offer[]>>((acc, offer) => {
