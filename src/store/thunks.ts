@@ -59,7 +59,7 @@ export const fetchReviewsById = (id: string): ThunkActionResult =>
 export const submitReview = (_id: string, review: { rating: number; comment: string }): ThunkActionResult =>
   async (dispatch, getState) => {
     try {
-      const newReview = await postReview(review);
+      const newReview = await postReview(_id, review);
       const currentReviews = getState().reviews;
       dispatch(setReviews([...currentReviews, newReview]));
     } catch {

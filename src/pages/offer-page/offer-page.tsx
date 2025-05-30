@@ -28,6 +28,12 @@ export default function OfferPage() {
     }
   }, [dispatch, id]);
 
+  useEffect(() => {
+    if (!currentOffer) {
+      navigate('/404');
+    }
+  }, [currentOffer, navigate]);
+
   if (isOffersLoading || isReviewsLoading) {
     return (
       <div className="page">
@@ -56,7 +62,6 @@ export default function OfferPage() {
   }
 
   if (!currentOffer) {
-    navigate('/404');
     return null;
   }
 
