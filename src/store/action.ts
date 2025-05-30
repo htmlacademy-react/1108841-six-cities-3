@@ -20,4 +20,4 @@ export const setReviewsError = createAction<string | null>('setReviewsError');
 export const setAuthorizationStatus = createAction<AuthorizationStatus>('setAuthorizationStatus');
 export const setUser = createAction<AuthInfo | null>('setUser');
 
-export type ThunkActionResult<R = Promise<void>> = ThunkAction<R, RootState, undefined, AnyAction>;
+export type ThunkActionResult<R = Promise<void>> = ThunkAction<R, RootState, unknown, AnyAction>;

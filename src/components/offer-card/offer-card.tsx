@@ -1,13 +1,29 @@
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { getRating } from '../../utils/utils';
 import { CardType } from '../../types/offer-type';
 import PropTypes from 'prop-types';
+import { useSelector } from 'react-redux';
+import { RootState, useAppDispatch } from '../../store';
+import { toggleFavorite } from '../../store/thunks';
+import { AuthorizationStatus } from '../../types/state';
 
 type CardPropsType = {
   card: CardType;
 };
 
 function Card({ card }: CardPropsType) {
+  const dispatch = useAppDispatch();
+  const navigate = useNavigate();
+  const authorizationStatus = useSelector((state: RootState) => state.user.authorizationStatus);
+
+  const handleFavoriteClick = () => {
+    if (authorizationStatus !== AuthorizationStatus.Auth) {
+      navigate('/login');
+      return;
+    }
+    dispatch(toggleFavorite(card.id, card.isFavorite));
+  };
+
   return (
     <article className="cities__card place-card">
       {card.isPremium === true && (
@@ -35,6 +51,7 @@ function Card({ card }: CardPropsType) {
           <button
             className={`place-card__bookmark-button ${card.isFavorite ? 'place-card__bookmark-button--active' : ''} button`}
             type="button"
+            onClick={handleFavoriteClick}
           >
             <svg className="place-card__bookmark-icon" width="18" height="19">
               <use xlinkHref="#icon-bookmark"></use>

@@ -58,6 +58,19 @@ const offersSlice = createSlice({
     setNearbyOffers(state, action: PayloadAction<Offer[]>) {
       state.nearbyOffers = action.payload;
     },
+    setFavorite(state, action: PayloadAction<{ id: string; isFavorite: boolean }>) {
+      const { id, isFavorite } = action.payload;
+      const offer = state.offers.find((o) => o.id === id);
+      if (offer) {
+        offer.isFavorite = isFavorite;
+      }
+      if (state.currentOffer && state.currentOffer.id === id) {
+        state.currentOffer.isFavorite = isFavorite;
+      }
+      state.nearbyOffers = state.nearbyOffers.map((o) =>
+        o.id === id ? { ...o, isFavorite } : o
+      );
+    },
   },
 });
 
@@ -70,6 +83,7 @@ export const {
   setOffersError,
   setCurrentOffer,
   setNearbyOffers,
+  setFavorite,
 } = offersSlice.actions;
 
 export default offersSlice.reducer;

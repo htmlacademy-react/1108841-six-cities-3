@@ -1,11 +1,19 @@
 import { ThunkActionResult } from './action';
 import { setAuthorizationStatus, setUser } from './user-slice';
-import { setOffers, setOffersLoading, setOffersError, setCurrentOffer, setNearbyOffers } from './offers-slice';
+import { setOffers, setOffersLoading, setOffersError, setCurrentOffer, setNearbyOffers, setFavorite } from './offers-slice';
 import { setReviews, setReviewsLoading, setReviewsError } from './reviews-slice';
-import { AuthorizationStatus } from '../types/state';
-import { fetchOffer, fetchNearbyOffers, fetchReviews, postReview, fetchOffers as fetchOffersApi } from '../api';
+import { AuthorizationStatus, Offer } from '../types/state';
+import { fetchOffer, fetchNearbyOffers, fetchReviews, postReview, fetchOffers as fetchOffersApi, getFavorites } from '../api';
 import axios from 'axios';
 import { Review } from '../types/review-type';
+
+const API_URL = 'https://15.design.htmlacademy.pro/six-cities';
+
+async function fetchJson<T>(input: RequestInfo, init?: RequestInit): Promise<T> {
+  const response = await fetch(input, init);
+  const text = await response.text();
+  return JSON.parse(text) as T;
+}
 
 export const fetchOffers = (): ThunkActionResult =>
   async (dispatch) => {
@@ -95,4 +103,27 @@ export const logout = (): ThunkActionResult =>
     await Promise.resolve();
     dispatch(setAuthorizationStatus(AuthorizationStatus.NoAuth));
     dispatch(setUser(null));
+  };
+
+export const fetchFavorites = (): ThunkActionResult =>
+  async (dispatch) => {
+    try {
+      const favorites = await getFavorites();
+      dispatch(setOffers(favorites));
+    } catch {
+      // Ошибка загрузки избранного
+    }
+  };
+
+export const toggleFavorite = (offerId: string, isFavorite: boolean): ThunkActionResult<void> =>
+  async (dispatch) => {
+    try {
+      const updated = await fetchJson<Offer>(`${API_URL}/favorite/${offerId}/${isFavorite ? 0 : 1}`, {
+        method: 'POST',
+        credentials: 'include'
+      });
+      dispatch(setFavorite({ id: offerId, isFavorite: updated.isFavorite }));
+    } catch {
+      // Ошибка обработки избранного (можно добавить обработку)
+    }
   };

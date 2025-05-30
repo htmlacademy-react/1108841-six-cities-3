@@ -28,3 +28,13 @@ export const postReview = async (id: string, review: { rating: number; comment: 
   const { data } = await axios.post<Review>(`${API_URL}/comments/${id}`, review);
   return data;
 };
+
+export const getFavorites = async (): Promise<Offer[]> => {
+  const { data } = await axios.get<Offer[]>(`${API_URL}/favorite`);
+  return data;
+};
+
+export const updateFavoriteStatus = async (offerId: string, status: 0 | 1): Promise<Offer> => {
+  const response = await axios.post<Offer>(`${API_URL}/favorite/${offerId}/${status}`);
+  return response.data;
+};
