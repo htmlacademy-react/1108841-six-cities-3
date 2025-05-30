@@ -1,5 +1,6 @@
 import { Review } from '../../types/review-type';
 import { getRating } from '../../utils/utils';
+import PropTypes from 'prop-types';
 
 type ReviewProps = {
   review: Review;
@@ -38,5 +39,19 @@ function ReviewItem({ review }: ReviewProps) {
     </li>
   );
 }
+
+ReviewItem.propTypes = {
+  review: PropTypes.shape({
+    id: PropTypes.number.isRequired,
+    comment: PropTypes.string.isRequired,
+    date: PropTypes.string.isRequired,
+    rating: PropTypes.number.isRequired,
+    user: PropTypes.shape({
+      name: PropTypes.string.isRequired,
+      avatarUrl: PropTypes.string.isRequired,
+      isPro: PropTypes.bool.isRequired,
+    }).isRequired,
+  }).isRequired,
+};
 
 export default ReviewItem;

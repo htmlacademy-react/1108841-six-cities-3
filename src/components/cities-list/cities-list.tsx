@@ -1,6 +1,6 @@
 import { useDispatch, useSelector } from 'react-redux';
 import { RootState } from '../../store';
-import { changeCity } from '../../store/action';
+import { changeCity } from '../../store/offers-slice';
 import { City } from '../../types/state';
 
 const CITIES: City[] = [
@@ -56,7 +56,7 @@ const CITIES: City[] = [
 
 export function CitiesList(): JSX.Element {
   const dispatch = useDispatch();
-  const currentCity = useSelector((state: RootState) => state.city);
+  const currentCity = useSelector((state: RootState) => state.offers.city);
 
   return (
     <div className="tabs">

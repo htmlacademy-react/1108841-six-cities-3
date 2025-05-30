@@ -1,8 +1,11 @@
 import { ThunkActionResult } from './action';
-import { setAuthorizationStatus, setUser, setOffers, setOffersLoading, setOffersError, setCurrentOffer, setNearbyOffers, setReviews, setReviewsLoading, setReviewsError } from './action';
+import { setAuthorizationStatus, setUser } from './user-slice';
+import { setOffers, setOffersLoading, setOffersError, setCurrentOffer, setNearbyOffers } from './offers-slice';
+import { setReviews, setReviewsLoading, setReviewsError } from './reviews-slice';
 import { AuthorizationStatus } from '../types/state';
 import { fetchOffer, fetchNearbyOffers, fetchReviews, postReview, fetchOffers as fetchOffersApi } from '../api';
 import axios from 'axios';
+import { Review } from '../types/review-type';
 
 export const fetchOffers = (): ThunkActionResult =>
   async (dispatch) => {
@@ -47,7 +50,7 @@ export const fetchReviewsById = (id: string): ThunkActionResult =>
       dispatch(setReviews(reviews));
     } catch (error) {
       if (axios.isAxiosError(error) && error.response?.status === 404) {
-        dispatch(setReviews([]));
+        dispatch(setReviews([] as Review[]));
       } else {
         dispatch(setReviewsError('Ошибка загрузки комментариев. Попробуйте позже.'));
       }
@@ -60,7 +63,7 @@ export const submitReview = (_id: string, review: { rating: number; comment: str
   async (dispatch, getState) => {
     try {
       const newReview = await postReview(_id, review);
-      const currentReviews = getState().reviews;
+      const currentReviews = getState().reviews.reviews;
       dispatch(setReviews([...currentReviews, newReview]));
     } catch {
       dispatch(setReviewsError('Ошибка отправки комментария. Попробуйте позже.'));

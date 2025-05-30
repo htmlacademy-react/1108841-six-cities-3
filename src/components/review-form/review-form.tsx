@@ -14,8 +14,8 @@ type ReviewFormData = {
 
 function ReviewForm({ offerId }: ReviewFormProps) {
   const dispatch = useAppDispatch();
-  const authorizationStatus = useAppSelector((state) => state.authorizationStatus);
-  const reviewsError = useAppSelector((state) => state.reviewsError) ?? null;
+  const authorizationStatus = useAppSelector((state) => state.user.authorizationStatus);
+  const reviewsError = useAppSelector((state) => state.reviews.reviewsError) ?? null;
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [formData, setFormData] = useState<ReviewFormData>({
     rating: 0,
