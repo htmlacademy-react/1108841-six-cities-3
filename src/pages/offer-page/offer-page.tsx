@@ -1,36 +1,66 @@
-import { useParams } from 'react-router-dom';
+import { useEffect } from 'react';
+import { useParams, useNavigate } from 'react-router-dom';
 import Card from '../../components/offer-card/offer-card';
 import Header from '../../components/header';
 import { ReviewList } from '../../components/review';
-import { Offer } from '../../types/state';
 import { CardType } from '../../types/offer-type';
 import { Map } from '../../components/map';
-import { useSelector } from 'react-redux';
-import { RootState } from '../../store';
+import { useAppDispatch, useAppSelector } from '../../store';
+import { fetchOfferById, fetchNearbyOffersById, fetchReviewsById } from '../../store/thunks';
 
-type OfferPageProps = {
-  offers: Offer[];
-};
-
-export default function OfferPage({ offers }: OfferPageProps) {
+export default function OfferPage() {
   const { id } = useParams<{ id: string }>();
-  const isOffersLoading = useSelector((state: RootState) => state.isOffersLoading);
+  const navigate = useNavigate();
+  const dispatch = useAppDispatch();
+  const currentOffer = useAppSelector((state) => state.currentOffer);
+  const nearbyOffers = useAppSelector((state) => state.nearbyOffers);
+  const reviews = useAppSelector((state) => state.reviews);
+  const isOffersLoading = useAppSelector((state) => state.isOffersLoading);
+  const isReviewsLoading = useAppSelector((state) => state.isReviewsLoading);
+  const offersError = useAppSelector((state) => state.offersError);
+  const reviewsError = useAppSelector((state) => state.reviewsError);
 
-  if (isOffersLoading || offers.length === 0) {
-    return <div>Загрузка...</div>;
+  useEffect(() => {
+    if (id) {
+      dispatch(fetchOfferById(id));
+      dispatch(fetchNearbyOffersById(id));
+      dispatch(fetchReviewsById(id));
+    }
+  }, [dispatch, id]);
+
+  if (isOffersLoading || isReviewsLoading) {
+    return (
+      <div className="page">
+        <Header />
+        <main className="page__main page__main--offer">
+          <div className="container" style={{ textAlign: 'center', padding: '100px 0' }}>
+            <h1>Загрузка...</h1>
+          </div>
+        </main>
+      </div>
+    );
   }
 
-  const currentOffer = offers.find((offer) => offer.id === id);
+  if (offersError || reviewsError) {
+    return (
+      <div className="page">
+        <Header />
+        <main className="page__main page__main--offer">
+          <div className="container" style={{ textAlign: 'center', padding: '100px 0' }}>
+            <h1>Ошибка</h1>
+            <p>{offersError || reviewsError}</p>
+          </div>
+        </main>
+      </div>
+    );
+  }
 
   if (!currentOffer) {
-    return <div>Предложение не найдено</div>;
+    navigate('/404');
+    return null;
   }
 
-  const similarOffers = offers
-    .filter((offer) => offer.id !== currentOffer.id && offer.city.name === currentOffer.city.name)
-    .slice(0, 3);
-
-  const mapOfferToCard = (offer: Offer): CardType => ({
+  const mapOfferToCard = (offer: typeof currentOffer): CardType => ({
     id: offer.id,
     img: offer.previewImage,
     rating: offer.rating,
@@ -42,19 +72,6 @@ export default function OfferPage({ offers }: OfferPageProps) {
     location: offer.location
   });
 
-  const mockReviews = [
-    {
-      id: 1,
-      user: {
-        name: 'Max',
-        avatarUrl: 'img/avatar-max.jpg',
-      },
-      rating: 4,
-      comment: 'A quiet cozy and picturesque that hides behind a a river by the unique lightness of Amsterdam. The building is green and from 18th century.',
-      date: '2019-04-24',
-    },
-  ];
-
   return (
     <div className="page">
       <Header />
@@ -62,7 +79,7 @@ export default function OfferPage({ offers }: OfferPageProps) {
         <section className="offer">
           <div className="offer__gallery-container container">
             <div className="offer__gallery">
-              {currentOffer?.images?.slice(0, 6).map((image) => (
+              {currentOffer.images.slice(0, 6).map((image) => (
                 <div className="offer__image-wrapper" key={`image-${image}`}>
                   <img
                     className="offer__image"
@@ -119,7 +136,7 @@ export default function OfferPage({ offers }: OfferPageProps) {
               <div className="offer__inside">
                 <h2 className="offer__inside-title">What&apos;s inside</h2>
                 <ul className="offer__inside-list">
-                  {currentOffer?.goods?.map((good) => (
+                  {currentOffer.goods.map((good) => (
                     <li className="offer__inside-item" key={good}>
                       {good}
                     </li>
@@ -129,17 +146,17 @@ export default function OfferPage({ offers }: OfferPageProps) {
               <div className="offer__host">
                 <h2 className="offer__host-title">Meet the host</h2>
                 <div className="offer__host-user user">
-                  <div className={`offer__avatar-wrapper ${currentOffer?.host?.isPro ? 'offer__avatar-wrapper--pro' : ''} user__avatar-wrapper`}>
+                  <div className={`offer__avatar-wrapper ${currentOffer.host.isPro ? 'offer__avatar-wrapper--pro' : ''} user__avatar-wrapper`}>
                     <img
                       className="offer__avatar user__avatar"
-                      src={currentOffer?.host?.avatarUrl || '/img/avatar.svg'}
+                      src={currentOffer.host.avatarUrl}
                       width="74"
                       height="74"
                       alt="Host avatar"
                     />
                   </div>
-                  <span className="offer__user-name">{currentOffer?.host?.name}</span>
-                  {currentOffer?.host?.isPro && (
+                  <span className="offer__user-name">{currentOffer.host.name}</span>
+                  {currentOffer.host.isPro && (
                     <span className="offer__user-status">Pro</span>
                   )}
                 </div>
@@ -149,12 +166,12 @@ export default function OfferPage({ offers }: OfferPageProps) {
                   </p>
                 </div>
               </div>
-              <ReviewList reviews={mockReviews} offerId={currentOffer.id} />
+              <ReviewList reviews={reviews} offerId={currentOffer.id} />
             </div>
           </div>
           <section className="offer__map map">
             <Map
-              offers={offers}
+              offers={[currentOffer, ...nearbyOffers]}
               lat={currentOffer.city.location.latitude}
               lng={currentOffer.city.location.longitude}
               zoom={currentOffer.city.location.zoom}
@@ -168,7 +185,7 @@ export default function OfferPage({ offers }: OfferPageProps) {
               Other places in the neighbourhood
             </h2>
             <div className="near-places__list places__list">
-              {similarOffers.map((offer) => (
+              {nearbyOffers.map((offer) => (
                 <Card key={offer.id} card={mapOfferToCard(offer)} />
               ))}
             </div>

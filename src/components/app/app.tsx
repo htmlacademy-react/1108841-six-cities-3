@@ -48,7 +48,7 @@ function App() {
             element={<FavoritesPage offers={offers.filter((offer: Offer) => offer.isFavorite)} />}
           />
         </Route>
-        <Route path={APP_ROUTE.OFFER} element={<OfferPage offers={offers} />} />
+        <Route path={APP_ROUTE.OFFER} element={<OfferPage />} />
         <Route path={APP_ROUTE.NOT_FOUND} element={<NotFoundPage />} />
       </Routes>
     </BrowserRouter>
