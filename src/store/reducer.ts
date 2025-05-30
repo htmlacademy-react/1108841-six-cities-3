@@ -1,6 +1,6 @@
 import { createReducer } from '@reduxjs/toolkit';
 import { State, AuthorizationStatus } from '../types/state';
-import { changeCity, setOffers, setSort, setActiveOffer, setOffersLoading, setOffersError, setAuthorizationStatus, setUser } from './action';
+import { changeCity, setOffers, setSort, setActiveOffer, setOffersLoading, setOffersError, setAuthorizationStatus, setUser, setCurrentOffer, setNearbyOffers, setReviews, setReviewsLoading, setReviewsError } from './action';
 
 const initialState: State = {
   city: {
@@ -17,7 +17,12 @@ const initialState: State = {
   isOffersLoading: false,
   offersError: null,
   authorizationStatus: AuthorizationStatus.Unknown,
-  user: null
+  user: null,
+  currentOffer: null,
+  nearbyOffers: [],
+  reviews: [],
+  isReviewsLoading: false,
+  reviewsError: null
 };
 
 export const rootReducer = createReducer(initialState, (builder) => {
@@ -45,5 +50,20 @@ export const rootReducer = createReducer(initialState, (builder) => {
     })
     .addCase(setUser, (state, action) => {
       state.user = action.payload;
+    })
+    .addCase(setCurrentOffer, (state, action) => {
+      state.currentOffer = action.payload;
+    })
+    .addCase(setNearbyOffers, (state, action) => {
+      state.nearbyOffers = action.payload;
+    })
+    .addCase(setReviews, (state, action) => {
+      state.reviews = action.payload;
+    })
+    .addCase(setReviewsLoading, (state, action) => {
+      state.isReviewsLoading = action.payload;
+    })
+    .addCase(setReviewsError, (state, action) => {
+      state.reviewsError = action.payload;
     });
 });

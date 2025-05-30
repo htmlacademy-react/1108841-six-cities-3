@@ -1,4 +1,7 @@
-import { ChangeEvent, FormEvent, useState, useEffect } from 'react';
+import { ChangeEvent, FormEvent, useState } from 'react';
+import { useAppDispatch, useAppSelector } from '../../store';
+import { submitReview } from '../../store/thunks';
+import { AuthorizationStatus } from '../../types/state';
 
 export type ReviewFormProps = {
   offerId: string;
@@ -10,41 +13,55 @@ type ReviewFormData = {
 };
 
 function ReviewForm({ offerId }: ReviewFormProps) {
+  const dispatch = useAppDispatch();
+  const authorizationStatus = useAppSelector((state) => state.authorizationStatus);
+  const reviewsError = useAppSelector((state) => state.reviewsError) ?? null;
+  const [isSubmitting, setIsSubmitting] = useState(false);
   const [formData, setFormData] = useState<ReviewFormData>({
     rating: 0,
     comment: '',
   });
 
-  useEffect(() => {
-    document.title = `Отзыв для предложения ${offerId}`;
-
-    return () => {
-      document.title = 'Six Cities';
-    };
-  }, [offerId]);
-
-  const handleRatingChange = (evt: ChangeEvent<HTMLInputElement>) => {
+  const handleRatingChange = (evt: ChangeEvent<HTMLInputElement>): void => {
     setFormData({
       ...formData,
       rating: Number(evt.target.value),
     });
   };
 
-  const handleCommentChange = (evt: ChangeEvent<HTMLTextAreaElement>) => {
+  const handleCommentChange = (evt: ChangeEvent<HTMLTextAreaElement>): void => {
     setFormData({
       ...formData,
       comment: evt.target.value,
     });
   };
 
-  const handleSubmit = (evt: FormEvent<HTMLFormElement>) => {
+  const handleSubmit = async (evt: FormEvent<HTMLFormElement>): Promise<void> => {
     evt.preventDefault();
+    setIsSubmitting(true);
+    try {
+      await dispatch(submitReview(offerId, formData));
+      setFormData({
+        rating: 0,
+        comment: '',
+      });
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
-  const isSubmitDisabled = formData.rating === 0 || formData.comment.length < 50 || formData.comment.length > 300;
+  if (authorizationStatus !== AuthorizationStatus.Auth) {
+    return null;
+  }
+
+  const isSubmitDisabled = formData.rating === 0 || formData.comment.length < 50 || formData.comment.length > 300 || isSubmitting;
+
+  const onSubmit = (evt: FormEvent<HTMLFormElement>) => {
+    void handleSubmit(evt);
+  };
 
   return (
-    <form className="reviews__form form" action="#" method="post" onSubmit={handleSubmit}>
+    <form className="reviews__form form" action="#" method="post" onSubmit={onSubmit}>
       <label className="reviews__label form__label" htmlFor="review">
         Your review
       </label>
@@ -57,6 +74,7 @@ function ReviewForm({ offerId }: ReviewFormProps) {
           type="radio"
           onChange={handleRatingChange}
           checked={formData.rating === 5}
+          disabled={isSubmitting}
         />
         <label
           htmlFor="5-stars"
@@ -76,6 +94,7 @@ function ReviewForm({ offerId }: ReviewFormProps) {
           type="radio"
           onChange={handleRatingChange}
           checked={formData.rating === 4}
+          disabled={isSubmitting}
         />
         <label
           htmlFor="4-stars"
@@ -95,6 +114,7 @@ function ReviewForm({ offerId }: ReviewFormProps) {
           type="radio"
           onChange={handleRatingChange}
           checked={formData.rating === 3}
+          disabled={isSubmitting}
         />
         <label
           htmlFor="3-stars"
@@ -114,6 +134,7 @@ function ReviewForm({ offerId }: ReviewFormProps) {
           type="radio"
           onChange={handleRatingChange}
           checked={formData.rating === 2}
+          disabled={isSubmitting}
         />
         <label
           htmlFor="2-stars"
@@ -133,6 +154,7 @@ function ReviewForm({ offerId }: ReviewFormProps) {
           type="radio"
           onChange={handleRatingChange}
           checked={formData.rating === 1}
+          disabled={isSubmitting}
         />
         <label
           htmlFor="1-star"
@@ -151,6 +173,7 @@ function ReviewForm({ offerId }: ReviewFormProps) {
         placeholder="Tell how was your stay, what you like and what can be improved"
         value={formData.comment}
         onChange={handleCommentChange}
+        disabled={isSubmitting}
       >
       </textarea>
       <div className="reviews__button-wrapper">
@@ -159,12 +182,17 @@ function ReviewForm({ offerId }: ReviewFormProps) {
           <span className="reviews__star">rating</span> and describe your stay
           with at least <b className="reviews__text-amount">50 characters</b>.
         </p>
+        {reviewsError && (
+          <p className="reviews__error" style={{ color: 'red' }}>
+            {reviewsError}
+          </p>
+        )}
         <button
           className="reviews__submit form__submit button"
           type="submit"
           disabled={isSubmitDisabled}
         >
-          Submit
+          {isSubmitting ? 'Submitting...' : 'Submit'}
         </button>
       </div>
     </form>

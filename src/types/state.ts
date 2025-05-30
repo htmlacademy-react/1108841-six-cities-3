@@ -1,3 +1,5 @@
+import { Review } from './review-type';
+
 export type Location = {
   latitude: number;
   longitude: number;
@@ -67,4 +69,9 @@ export type State = {
   offersError: string | null;
   authorizationStatus: AuthorizationStatus;
   user: AuthInfo | null;
+  currentOffer: Offer | null;
+  nearbyOffers: Offer[];
+  reviews: Review[];
+  isReviewsLoading: boolean;
+  reviewsError: string | null;
 };

@@ -1,18 +1,69 @@
 import { ThunkActionResult } from './action';
-import { setAuthorizationStatus, setUser, setOffers, setOffersLoading, setOffersError } from './action';
-import { AuthorizationStatus, Offer } from '../types/state';
+import { setAuthorizationStatus, setUser, setOffers, setOffersLoading, setOffersError, setCurrentOffer, setNearbyOffers, setReviews, setReviewsLoading, setReviewsError } from './action';
+import { AuthorizationStatus } from '../types/state';
+import { fetchOffer, fetchNearbyOffers, fetchReviews, postReview, fetchOffers as fetchOffersApi } from '../api';
+import axios from 'axios';
 
 export const fetchOffers = (): ThunkActionResult =>
-  async (dispatch, _getState, api) => {
+  async (dispatch) => {
     dispatch(setOffersLoading(true));
     dispatch(setOffersError(null));
     try {
-      const { data } = await api.get<Offer[]>('/offers');
-      dispatch(setOffers(data));
+      const offers = await fetchOffersApi();
+      dispatch(setOffers(offers));
     } catch {
       dispatch(setOffersError('Ошибка загрузки предложений. Попробуйте позже.'));
     } finally {
       dispatch(setOffersLoading(false));
+    }
+  };
+
+export const fetchOfferById = (id: string): ThunkActionResult =>
+  async (dispatch) => {
+    try {
+      const offer = await fetchOffer(id);
+      dispatch(setCurrentOffer(offer));
+    } catch {
+      dispatch(setCurrentOffer(null));
+    }
+  };
+
+export const fetchNearbyOffersById = (id: string): ThunkActionResult =>
+  async (dispatch) => {
+    try {
+      const offers = await fetchNearbyOffers(id);
+      dispatch(setNearbyOffers(offers));
+    } catch {
+      dispatch(setNearbyOffers([]));
+    }
+  };
+
+export const fetchReviewsById = (id: string): ThunkActionResult =>
+  async (dispatch) => {
+    dispatch(setReviewsLoading(true));
+    dispatch(setReviewsError(null));
+    try {
+      const reviews = await fetchReviews(id);
+      dispatch(setReviews(reviews));
+    } catch (error) {
+      if (axios.isAxiosError(error) && error.response?.status === 404) {
+        dispatch(setReviews([]));
+      } else {
+        dispatch(setReviewsError('Ошибка загрузки комментариев. Попробуйте позже.'));
+      }
+    } finally {
+      dispatch(setReviewsLoading(false));
+    }
+  };
+
+export const submitReview = (_id: string, review: { rating: number; comment: string }): ThunkActionResult =>
+  async (dispatch, getState) => {
+    try {
+      const newReview = await postReview(_id, review);
+      const currentReviews = getState().reviews;
+      dispatch(setReviews([...currentReviews, newReview]));
+    } catch {
+      dispatch(setReviewsError('Ошибка отправки комментария. Попробуйте позже.'));
     }
   };
 
