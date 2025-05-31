@@ -1,6 +1,6 @@
 import { ThunkActionResult } from './action';
 import { setAuthorizationStatus, setUser } from './user-slice';
-import { setOffers, setOffersLoading, setOffersError, setCurrentOffer, setNearbyOffers, setFavorite } from './offers-slice';
+import { setOffers, setOffersLoading, setOffersError, setCurrentOffer, setNearbyOffers, setFavoritesLoading, setFavorite } from './offers-slice';
 import { setReviews, setReviewsLoading, setReviewsError } from './reviews-slice';
 import { AuthorizationStatus, Offer } from '../types/state';
 import { fetchOffer, fetchNearbyOffers, fetchReviews, postReview, fetchOffers as fetchOffersApi, getFavorites } from '../api';
@@ -107,11 +107,14 @@ export const logout = (): ThunkActionResult =>
 
 export const fetchFavorites = (): ThunkActionResult =>
   async (dispatch) => {
+    dispatch(setFavoritesLoading(true));
     try {
       const favorites = await getFavorites();
       dispatch(setOffers(favorites));
     } catch {
       // Ошибка загрузки избранного
+    } finally {
+      dispatch(setFavoritesLoading(false));
     }
   };
 

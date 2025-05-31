@@ -8,6 +8,7 @@ import { Map } from '../../components/map';
 import { useAppDispatch, useAppSelector } from '../../store';
 import { fetchOfferById, fetchNearbyOffersById, fetchReviewsById } from '../../store/thunks';
 import { sortedReviewsSelector } from '../../store/selectors';
+import LoadingSpinner from '../../components/loading-spinner';
 
 export default function OfferPage() {
   const { id } = useParams<{ id: string }>();
@@ -36,16 +37,7 @@ export default function OfferPage() {
   }, [currentOffer, navigate]);
 
   if (isOffersLoading || isReviewsLoading) {
-    return (
-      <div className="page">
-        <Header />
-        <main className="page__main page__main--offer">
-          <div className="container" style={{ textAlign: 'center', padding: '100px 0' }}>
-            <h1>Загрузка...</h1>
-          </div>
-        </main>
-      </div>
-    );
+    return <LoadingSpinner message="Загружаем детали предложения..." />;
   }
 
   if (offersError || reviewsError) {

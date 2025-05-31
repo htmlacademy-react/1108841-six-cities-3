@@ -5,15 +5,29 @@ import { useSelector } from 'react-redux';
 import { favoriteOffersSelector } from '../../store/selectors';
 import { Offer } from '../../types/state';
 import { useEffect } from 'react';
-import { useAppDispatch } from '../../store';
+import { useAppDispatch, useAppSelector } from '../../store';
 import { fetchFavorites } from '../../store/thunks';
+import LoadingSpinner from '../../components/loading-spinner';
+import FavoritesPageEmpty from './favorites-page-empty';
 
 function FavoritePage() {
   const dispatch = useAppDispatch();
+  const isFavoritesLoading = useAppSelector((state) => state.offers.isFavoritesLoading);
+
   useEffect(() => {
     dispatch(fetchFavorites());
   }, [dispatch]);
+
   const favoriteOffers = useSelector(favoriteOffersSelector);
+
+  if (isFavoritesLoading) {
+    return <LoadingSpinner message="Загружаем избранное..." />;
+  }
+
+  if (favoriteOffers.length === 0) {
+    return <FavoritesPageEmpty />;
+  }
+
   // Группировка предложений по городам
   const offersByCity = favoriteOffers.reduce<Record<string, Offer[]>>((acc, offer) => {
     const cityName = offer.city.name;

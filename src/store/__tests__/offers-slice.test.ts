@@ -50,7 +50,8 @@ describe('offersSlice', () => {
     isOffersLoading: false,
     offersError: null,
     currentOffer: null,
-    nearbyOffers: []
+    nearbyOffers: [],
+    isFavoritesLoading: false,
   };
 
   it('should change city', () => {
@@ -104,6 +105,12 @@ describe('offersSlice', () => {
     const action = { type: 'offers/setNearbyOffers', payload: nearbyOffers };
     const newState = offersSlice(initialState, action);
     expect(newState.nearbyOffers).toEqual(nearbyOffers);
+  });
+
+  it('should set favorites loading state', () => {
+    const action = { type: 'offers/setFavoritesLoading', payload: true };
+    const newState = offersSlice(initialState, action);
+    expect(newState.isFavoritesLoading).toBe(true);
   });
 
   it('should set favorite status', () => {

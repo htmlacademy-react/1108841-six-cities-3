@@ -9,7 +9,7 @@ import LoginPage from '../../pages/login-page';
 import PrivateRoute from '../private/private';
 import { useSelector } from 'react-redux';
 import { RootState } from '../../store';
-import { checkAuth } from '../../store/thunks';
+import { checkAuth, fetchOffers } from '../../store/thunks';
 import { AuthorizationStatus } from '../../types/state';
 import { useAppDispatch } from '../../hooks/use-app-dispatch';
 
@@ -25,6 +25,7 @@ function App() {
 
   useEffect(() => {
     dispatch(checkAuth());
+    dispatch(fetchOffers());
   }, [dispatch]);
 
   if (authorizationStatus === AuthorizationStatus.Unknown) {

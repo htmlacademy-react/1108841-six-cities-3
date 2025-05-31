@@ -7,6 +7,7 @@ import { Map } from '../../components/map';
 import CitiesList from '../../components/cities-list/cities-list';
 import { useAppDispatch } from '../../hooks/use-app-dispatch';
 import { setSort } from '../../store/offers-slice';
+import LoadingSpinner from '../../components/loading-spinner';
 
 function MainPage(): JSX.Element {
   const dispatch = useAppDispatch();
@@ -14,12 +15,31 @@ function MainPage(): JSX.Element {
   const offers = useAppSelector((state) => state.offers.offers);
   const activeOfferId = useAppSelector((state) => state.offers.activeOfferId);
   const currentSort = useAppSelector((state) => state.offers.sort) as SortTypeType;
+  const isOffersLoading = useAppSelector((state) => state.offers.isOffersLoading);
+  const offersError = useAppSelector((state) => state.offers.offersError);
 
   const filteredOffers = offers.filter((offer) => offer.city.name === city.name);
 
   const handleSortChange = (sort: SortTypeType) => {
     dispatch(setSort(sort));
   };
+
+  if (isOffersLoading) {
+    return <LoadingSpinner message="Загружаем предложения..." withHeader={false} />;
+  }
+
+  if (offersError) {
+    return (
+      <div className="page">
+        <main className="page__main">
+          <div className="container" style={{ textAlign: 'center', padding: '100px 0' }}>
+            <h1>Ошибка</h1>
+            <p>{offersError}</p>
+          </div>
+        </main>
+      </div>
+    );
+  }
 
   return (
     <div className="page page--gray page--main">

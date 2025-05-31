@@ -10,6 +10,7 @@ export type OffersState = {
   offersError: string | null;
   currentOffer: Offer | null;
   nearbyOffers: Offer[];
+  isFavoritesLoading: boolean;
 };
 
 const initialState: OffersState = {
@@ -28,6 +29,7 @@ const initialState: OffersState = {
   offersError: null,
   currentOffer: null,
   nearbyOffers: [],
+  isFavoritesLoading: false,
 };
 
 const offersSlice = createSlice({
@@ -58,6 +60,9 @@ const offersSlice = createSlice({
     setNearbyOffers(state, action: PayloadAction<Offer[]>) {
       state.nearbyOffers = action.payload;
     },
+    setFavoritesLoading(state, action: PayloadAction<boolean>) {
+      state.isFavoritesLoading = action.payload;
+    },
     setFavorite(state, action: PayloadAction<{ id: string; isFavorite: boolean }>) {
       const { id, isFavorite } = action.payload;
       const offer = state.offers.find((o) => o.id === id);
@@ -83,6 +88,7 @@ export const {
   setOffersError,
   setCurrentOffer,
   setNearbyOffers,
+  setFavoritesLoading,
   setFavorite,
 } = offersSlice.actions;
 
