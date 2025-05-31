@@ -1,38 +1,39 @@
 import { Link, useNavigate } from 'react-router-dom';
 import { getRating } from '../../utils/utils';
 import { CardType } from '../../types/offer-type';
-import PropTypes from 'prop-types';
 import { useSelector } from 'react-redux';
 import { RootState, useAppDispatch } from '../../store';
 import { toggleFavorite } from '../../store/thunks';
 import { AuthorizationStatus } from '../../types/state';
+import { APP_ROUTE } from '../../const';
 
-type CardPropsType = {
+type CardProps = {
   card: CardType;
+  className?: string;
 };
 
-function Card({ card }: CardPropsType) {
+function Card({ card, className = '' }: CardProps): JSX.Element {
   const dispatch = useAppDispatch();
   const navigate = useNavigate();
   const authorizationStatus = useSelector((state: RootState) => state.user.authorizationStatus);
 
   const handleFavoriteClick = () => {
     if (authorizationStatus !== AuthorizationStatus.Auth) {
-      navigate('/login');
+      navigate(APP_ROUTE.LOGIN);
       return;
     }
     dispatch(toggleFavorite(card.id, card.isFavorite));
   };
 
   return (
-    <article className="cities__card place-card">
-      {card.isPremium === true && (
+    <article className={`cities__card place-card ${className}`.trim()}>
+      {card.isPremium && (
         <div className="place-card__mark">
           <span>Premium</span>
         </div>
       )}
       <div className="cities__image-wrapper place-card__image-wrapper">
-        <Link to={`/offer/${card.id}`}>
+        <Link to={`${APP_ROUTE.OFFER.replace(':id', card.id)}`}>
           <img
             className="place-card__image"
             src={card.img}
@@ -66,26 +67,12 @@ function Card({ card }: CardPropsType) {
           </div>
         </div>
         <h2 className="place-card__name">
-          <Link to={`/offer/${card.id}`}>{card.title}</Link>
+          <Link to={`${APP_ROUTE.OFFER.replace(':id', card.id)}`}>{card.title}</Link>
         </h2>
         <p className="place-card__type">{card.type}</p>
       </div>
     </article>
   );
 }
-
-Card.propTypes = {
-  card: PropTypes.shape({
-    id: PropTypes.string.isRequired,
-    img: PropTypes.string.isRequired,
-    rating: PropTypes.number.isRequired,
-    isPremium: PropTypes.bool.isRequired,
-    price: PropTypes.number.isRequired,
-    title: PropTypes.string.isRequired,
-    type: PropTypes.string.isRequired,
-    isFavorite: PropTypes.bool.isRequired,
-    location: PropTypes.object.isRequired,
-  }).isRequired,
-};
 
 export default Card;

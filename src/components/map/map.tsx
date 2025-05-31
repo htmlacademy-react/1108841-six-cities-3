@@ -3,35 +3,39 @@ import L from 'leaflet';
 import 'leaflet/dist/leaflet.css';
 import { Offer } from '../../types/state';
 
-export type MapProps = {
+type MapProps = {
   offers: Offer[];
   lat: number;
   lng: number;
   zoom: number;
   activeOfferId: string | null;
+  className?: string;
 };
 
-const defaultIcon = L.icon({
+const DEFAULT_ICON = L.icon({
   iconUrl: 'https://unpkg.com/leaflet@1.7.1/dist/images/marker-icon.png',
   iconSize: [27, 39],
   iconAnchor: [13, 39],
 });
 
-const activeIcon = L.icon({
+const ACTIVE_ICON = L.icon({
   iconUrl: '/img/pin-active.svg',
   iconSize: [27, 39],
   iconAnchor: [13, 39],
 });
 
-export function Map({ offers, lat, lng, zoom, activeOfferId }: MapProps) {
+const TILE_LAYER = 'https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png';
+const ATTRIBUTION = '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors &copy; <a href="https://carto.com/attributions">CARTO</a>';
+
+function Map({ offers, lat, lng, zoom, activeOfferId, className = '' }: MapProps): JSX.Element {
   const mapRef = useRef<L.Map | null>(null);
   const markersRef = useRef<L.Marker[]>([]);
 
   useEffect(() => {
     if (!mapRef.current) {
       mapRef.current = L.map('map').setView([lat, lng], zoom);
-      L.tileLayer('https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png', {
-        attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors &copy; <a href="https://carto.com/attributions">CARTO</a>',
+      L.tileLayer(TILE_LAYER, {
+        attribution: ATTRIBUTION,
       }).addTo(mapRef.current);
     }
     return () => {
@@ -59,7 +63,7 @@ export function Map({ offers, lat, lng, zoom, activeOfferId }: MapProps) {
     offers.forEach((offer) => {
       const marker = L.marker(
         [offer.location.latitude, offer.location.longitude],
-        { icon: offer.id === activeOfferId ? activeIcon : defaultIcon }
+        { icon: offer.id === activeOfferId ? ACTIVE_ICON : DEFAULT_ICON }
       ).addTo(mapRef.current!);
 
       marker.bindPopup(offer.title);
@@ -67,5 +71,7 @@ export function Map({ offers, lat, lng, zoom, activeOfferId }: MapProps) {
     });
   }, [offers, activeOfferId]);
 
-  return <section className="cities__map map" id="map" />;
+  return <section className={`cities__map map ${className}`.trim()} id="map" />;
 }
+
+export default Map;

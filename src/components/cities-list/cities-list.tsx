@@ -2,10 +2,11 @@ import { useDispatch, useSelector } from 'react-redux';
 import { RootState } from '../../store';
 import { changeCity } from '../../store/offers-slice';
 import { City } from '../../types/state';
+import { City as CityConst } from '../../const';
 
 const CITIES: City[] = [
   {
-    name: 'Paris',
+    name: CityConst.Paris,
     location: {
       latitude: 48.85661,
       longitude: 2.351499,
@@ -13,7 +14,7 @@ const CITIES: City[] = [
     }
   },
   {
-    name: 'Cologne',
+    name: CityConst.Cologne,
     location: {
       latitude: 50.938361,
       longitude: 6.959974,
@@ -21,7 +22,7 @@ const CITIES: City[] = [
     }
   },
   {
-    name: 'Brussels',
+    name: CityConst.Brussels,
     location: {
       latitude: 50.846557,
       longitude: 4.351697,
@@ -29,7 +30,7 @@ const CITIES: City[] = [
     }
   },
   {
-    name: 'Amsterdam',
+    name: CityConst.Amsterdam,
     location: {
       latitude: 52.37454,
       longitude: 4.897976,
@@ -37,7 +38,7 @@ const CITIES: City[] = [
     }
   },
   {
-    name: 'Hamburg',
+    name: CityConst.Hamburg,
     location: {
       latitude: 53.550341,
       longitude: 10.000654,
@@ -45,7 +46,7 @@ const CITIES: City[] = [
     }
   },
   {
-    name: 'Dusseldorf',
+    name: CityConst.Dusseldorf,
     location: {
       latitude: 51.225402,
       longitude: 6.776314,
@@ -54,12 +55,21 @@ const CITIES: City[] = [
   }
 ];
 
-export function CitiesList(): JSX.Element {
+type CitiesListProps = {
+  className?: string;
+};
+
+function CitiesList({ className = '' }: CitiesListProps): JSX.Element {
   const dispatch = useDispatch();
   const currentCity = useSelector((state: RootState) => state.offers.city);
 
+  const handleCityClick = (evt: React.MouseEvent<HTMLAnchorElement>, city: City) => {
+    evt.preventDefault();
+    dispatch(changeCity(city));
+  };
+
   return (
-    <div className="tabs">
+    <div className={`tabs ${className}`.trim()}>
       <section className="locations container">
         <ul className="locations__list tabs__list">
           {CITIES.map((city) => (
@@ -69,10 +79,7 @@ export function CitiesList(): JSX.Element {
                   city.name === currentCity.name ? 'tabs__item--active' : ''
                 }`}
                 href="#"
-                onClick={(evt) => {
-                  evt.preventDefault();
-                  dispatch(changeCity(city));
-                }}
+                onClick={(evt) => handleCityClick(evt, city)}
               >
                 <span>{city.name}</span>
               </a>
@@ -83,3 +90,5 @@ export function CitiesList(): JSX.Element {
     </div>
   );
 }
+
+export default CitiesList;

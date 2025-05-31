@@ -1,21 +1,24 @@
 import { Review } from '../../types/review-type';
 import ReviewItem from './review';
 import ReviewForm from '../review-form';
-import PropTypes from 'prop-types';
 
-export type ReviewListProps = {
+type ReviewListProps = {
   reviews: Review[];
   offerId: string;
 };
 
-function ReviewList({ reviews, offerId }: ReviewListProps) {
+function ReviewList({ reviews, offerId }: ReviewListProps): JSX.Element {
+  const sortedReviews = [...reviews].sort((a, b) =>
+    new Date(b.date).getTime() - new Date(a.date).getTime()
+  );
+
   return (
     <section className="offer__reviews reviews">
       <h2 className="reviews__title">
         Reviews &middot; <span className="reviews__amount">{reviews.length}</span>
       </h2>
       <ul className="reviews__list">
-        {reviews.map((review) => (
+        {sortedReviews.map((review) => (
           <ReviewItem key={review.id} review={review} />
         ))}
       </ul>
@@ -23,10 +26,5 @@ function ReviewList({ reviews, offerId }: ReviewListProps) {
     </section>
   );
 }
-
-ReviewList.propTypes = {
-  reviews: PropTypes.array.isRequired,
-  offerId: PropTypes.string.isRequired,
-};
 
 export default ReviewList;
