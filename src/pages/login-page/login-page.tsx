@@ -5,6 +5,8 @@ import { login } from '../../store/thunks';
 import { APP_ROUTE } from '../../const';
 import { AppDispatch } from '../../store';
 
+const MAIN_ROUTE = APP_ROUTE.MAIN as string;
+
 function LoginPage(): JSX.Element {
   const dispatch: AppDispatch = useDispatch();
   const navigate = useNavigate();
@@ -15,7 +17,7 @@ function LoginPage(): JSX.Element {
     evt.preventDefault();
     dispatch(login(email))
       .then(() => {
-        navigate(APP_ROUTE.MAIN);
+        navigate(MAIN_ROUTE);
       })
       .catch(() => {
         // Ошибка уже обработана в thunk
@@ -28,7 +30,7 @@ function LoginPage(): JSX.Element {
         <div className="container">
           <div className="header__wrapper">
             <div className="header__left">
-              <Link className="header__logo-link" to={APP_ROUTE.MAIN}>
+              <Link className="header__logo-link" to={MAIN_ROUTE}>
                 <img className="header__logo" src="img/logo.svg" alt="6 cities logo" width="81" height="41" />
               </Link>
             </div>
@@ -72,7 +74,7 @@ function LoginPage(): JSX.Element {
           </section>
           <section className="locations locations--login locations--current">
             <div className="locations__item">
-              <Link className="locations__item-link" to={APP_ROUTE.MAIN}>
+              <Link className="locations__item-link" to={MAIN_ROUTE}>
                 <span>Amsterdam</span>
               </Link>
             </div>

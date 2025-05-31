@@ -13,6 +13,12 @@ import { checkAuth } from '../../store/thunks';
 import { AuthorizationStatus } from '../../types/state';
 import { useAppDispatch } from '../../hooks/use-app-dispatch';
 
+const MAIN_ROUTE = APP_ROUTE.MAIN as string;
+const LOGIN_ROUTE = APP_ROUTE.LOGIN as string;
+const FAVORITES_ROUTE = APP_ROUTE.FAVORITES as string;
+const OFFER_ROUTE = APP_ROUTE.OFFER as string;
+const NOT_FOUND_ROUTE = APP_ROUTE.NOT_FOUND as string;
+
 function App() {
   const dispatch = useAppDispatch();
   const authorizationStatus = useSelector((state: RootState) => state.user.authorizationStatus);
@@ -29,25 +35,25 @@ function App() {
     <BrowserRouter>
       <Routes>
         <Route
-          path={APP_ROUTE.MAIN}
+          path={MAIN_ROUTE}
           element={<MainPage />}
         />
-        <Route path={APP_ROUTE.LOGIN} element={<LoginPage />} />
+        <Route path={LOGIN_ROUTE} element={<LoginPage />} />
         <Route
           element={
             <PrivateRoute
               authorizationStatus={authorizationStatus}
-              redirectPath={APP_ROUTE.LOGIN}
+              redirectPath={LOGIN_ROUTE}
             />
           }
         >
           <Route
-            path={APP_ROUTE.FAVORITES}
+            path={FAVORITES_ROUTE}
             element={<FavoritesPage />}
           />
         </Route>
-        <Route path={APP_ROUTE.OFFER} element={<OfferPage />} />
-        <Route path={APP_ROUTE.NOT_FOUND} element={<NotFoundPage />} />
+        <Route path={OFFER_ROUTE} element={<OfferPage />} />
+        <Route path={NOT_FOUND_ROUTE} element={<NotFoundPage />} />
       </Routes>
     </BrowserRouter>
   );

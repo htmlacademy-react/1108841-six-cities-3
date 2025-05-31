@@ -4,13 +4,13 @@ import Card from './offer-card';
 import { Offer } from '../../types/state';
 import { CardType } from '../../types/offer-type';
 import { useCallback } from 'react';
-import PropTypes from 'prop-types';
 
 type OfferListProps = {
   offers: Offer[];
+  className?: string;
 };
 
-function CardListMain({ offers }: OfferListProps) {
+function OfferList({ offers, className = '' }: OfferListProps): JSX.Element {
   const dispatch = useDispatch();
 
   const handleCardHover = useCallback((offer: Offer) => {
@@ -34,7 +34,7 @@ function CardListMain({ offers }: OfferListProps) {
   });
 
   return (
-    <div className="cities__places-list places__list tabs__content">
+    <div className={`cities__places-list places__list tabs__content ${className}`.trim()}>
       {offers.map((offer) => (
         <div
           key={offer.id}
@@ -48,8 +48,4 @@ function CardListMain({ offers }: OfferListProps) {
   );
 }
 
-CardListMain.propTypes = {
-  offers: PropTypes.array.isRequired,
-};
-
-export default CardListMain;
+export default OfferList;

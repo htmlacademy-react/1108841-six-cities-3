@@ -1,19 +1,16 @@
 import { Link } from 'react-router-dom';
-import { useSelector } from 'react-redux';
-import { RootState } from '../../store';
-import { logout } from '../../store/thunks';
-import { APP_ROUTE } from '../../const';
+import { useAppSelector } from '../../store';
 import { AuthorizationStatus } from '../../types/state';
+import { logout } from '../../store/thunks';
 import { useAppDispatch } from '../../hooks/use-app-dispatch';
-import { favoriteOffersSelector } from '../../store/selectors';
+import { APP_ROUTE } from '../../const';
 
 function Header(): JSX.Element {
   const dispatch = useAppDispatch();
-  const authorizationStatus = useSelector((state: RootState) => state.user.authorizationStatus);
-  const user = useSelector((state: RootState) => state.user.user);
-  const favoriteCount = useSelector(favoriteOffersSelector).length;
+  const authorizationStatus = useAppSelector((state) => state.user.authorizationStatus);
+  const user = useAppSelector((state) => state.user.user);
 
-  const handleLogout = () => {
+  const handleLogoutClick = () => {
     dispatch(logout());
   };
 
@@ -28,37 +25,24 @@ function Header(): JSX.Element {
           </div>
           <nav className="header__nav">
             <ul className="header__nav-list">
-              {authorizationStatus === AuthorizationStatus.Auth && user ? (
+              {authorizationStatus === AuthorizationStatus.Auth ? (
                 <>
                   <li className="header__nav-item user">
                     <div className="header__nav-profile">
-                      <div className="header__avatar-wrapper user__avatar-wrapper">
-                        <img
-                          className="header__avatar user__avatar"
-                          src={user.avatarUrl}
-                          alt={user.name}
-                          width="20"
-                          height="20"
-                        />
-                      </div>
-                      <span className="header__user-name user__name">{user.email}</span>
+                      <div className="header__avatar-wrapper user__avatar-wrapper"></div>
+                      <span className="header__user-name user__name">{user?.email}</span>
                     </div>
                   </li>
                   <li className="header__nav-item">
-                    <Link className="header__nav-link" to={APP_ROUTE.FAVORITES}>
-                      <span className="header__favorite-count">{favoriteCount}</span>
-                    </Link>
-                  </li>
-                  <li className="header__nav-item">
-                    <button className="header__nav-link" onClick={handleLogout}>
+                    <Link className="header__nav-link" to={APP_ROUTE.MAIN} onClick={handleLogoutClick}>
                       <span className="header__signout">Sign out</span>
-                    </button>
+                    </Link>
                   </li>
                 </>
               ) : (
                 <li className="header__nav-item">
                   <Link className="header__nav-link" to={APP_ROUTE.LOGIN}>
-                    <span className="header__signin">Sign in</span>
+                    <span className="header__signout">Sign in</span>
                   </Link>
                 </li>
               )}
