@@ -54,6 +54,8 @@ export type AuthInfo = {
   isPro: boolean;
 };
 
+export type User = AuthInfo;
+
 export enum AuthorizationStatus {
   Auth = 'AUTH',
   NoAuth = 'NO_AUTH',

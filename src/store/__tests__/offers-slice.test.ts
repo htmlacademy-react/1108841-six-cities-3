@@ -45,6 +45,7 @@ describe('offersSlice', () => {
       }
     },
     offers: [],
+    favoriteOffers: [],
     sort: 'Popular',
     activeOfferId: null,
     isOffersLoading: false,
@@ -52,6 +53,7 @@ describe('offersSlice', () => {
     currentOffer: null,
     nearbyOffers: [],
     isFavoritesLoading: false,
+    isCurrentOfferLoading: false,
   };
 
   it('should change city', () => {
@@ -118,7 +120,8 @@ describe('offersSlice', () => {
       ...initialState,
       offers: [mockOffer],
       currentOffer: mockOffer,
-      nearbyOffers: [mockOffer]
+      nearbyOffers: [mockOffer],
+      favoriteOffers: []
     };
 
     const action = { type: 'offers/setFavorite', payload: { id: '1', isFavorite: true } };
@@ -127,5 +130,7 @@ describe('offersSlice', () => {
     expect(newState.offers[0].isFavorite).toBe(true);
     expect(newState.currentOffer?.isFavorite).toBe(true);
     expect(newState.nearbyOffers[0].isFavorite).toBe(true);
+    expect(newState.favoriteOffers).toHaveLength(1);
+    expect(newState.favoriteOffers[0].id).toBe('1');
   });
 });

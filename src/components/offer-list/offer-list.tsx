@@ -1,6 +1,9 @@
-import Card from '../offer-card/offer-card';
+import Card from '../offer-card';
 import { Offer } from '../../types/state';
 import { CardType } from '../../types/offer-type';
+import { useAppDispatch } from '../../store';
+import { changeActiveOffer } from '../../store/thunks';
+import { useCallback } from 'react';
 
 type OfferListProps = {
   offers: Offer[];
@@ -21,19 +24,25 @@ function mapOffersToCardType(offer: Offer): CardType {
 }
 
 function CardListMain({ offers }: OfferListProps) {
-  const handleCardHover = () => {};
-  const handleCardLeave = () => {};
+  const dispatch = useAppDispatch();
+
+  const handleCardHover = useCallback((offerId: string) => {
+    dispatch(changeActiveOffer(offerId));
+  }, [dispatch]);
+
+  const handleCardLeave = useCallback(() => {
+    dispatch(changeActiveOffer(null));
+  }, [dispatch]);
 
   return (
     <div className="cities__places-list places__list tabs__content">
       {offers.map((offer) => (
-        <div
+        <Card
           key={offer.id}
-          onMouseEnter={() => handleCardHover()}
+          card={mapOffersToCardType(offer)}
+          onMouseEnter={() => handleCardHover(offer.id)}
           onMouseLeave={handleCardLeave}
-        >
-          <Card card={mapOffersToCardType(offer)} />
-        </div>
+        />
       ))}
     </div>
   );

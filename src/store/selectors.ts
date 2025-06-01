@@ -1,6 +1,7 @@
 import { createSelector } from '@reduxjs/toolkit';
 import { RootState } from './index';
-import { Offer, SortType } from '../types/state';
+import { Offer } from '../types/state';
+import { SortType } from '../const';
 
 export const citySelector = (state: RootState) => state.offers.city;
 export const offersSelector = (state: RootState) => state.offers.offers;
@@ -11,14 +12,14 @@ export const filteredOffersSelector = createSelector(
   (offers, city) => offers.filter((offer) => offer.city.name === city.name)
 );
 
-function sortOffers(offers: Offer[], sort: SortType): Offer[] {
-  if (sort === 'PriceLowToHigh') {
+function sortOffers(offers: Offer[], sort: string): Offer[] {
+  if (sort === SortType.PriceLowToHigh) {
     return [...offers].sort((a, b) => a.price - b.price);
   }
-  if (sort === 'PriceHighToLow') {
+  if (sort === SortType.PriceHighToLow) {
     return [...offers].sort((a, b) => b.price - a.price);
   }
-  if (sort === 'TopRated') {
+  if (sort === SortType.TopRatedFirst) {
     return [...offers].sort((a, b) => b.rating - a.rating);
   }
   return offers;
@@ -26,12 +27,12 @@ function sortOffers(offers: Offer[], sort: SortType): Offer[] {
 
 export const sortedOffersSelector = createSelector(
   [filteredOffersSelector, sortSelector],
-  (filteredOffers, sort) => sortOffers(filteredOffers, sort as SortType)
+  (filteredOffers, sort) => sortOffers(filteredOffers, sort)
 );
 
 export const favoriteOffersSelector = createSelector(
-  offersSelector,
-  (offers) => offers.filter((offer) => offer.isFavorite)
+  (state: RootState) => state.offers.favoriteOffers,
+  (favoriteOffers) => favoriteOffers
 );
 
 export const reviewsSelector = (state: RootState) => state.reviews.reviews;

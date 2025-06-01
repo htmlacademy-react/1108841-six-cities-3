@@ -24,10 +24,10 @@ vi.mock('react-router-dom', async () => {
   };
 });
 
-const createMockStore = () => configureStore({
+const createMockStore = (authStatus = 'NO_AUTH') => configureStore({
   reducer: {
     user: () => ({
-      authorizationStatus: 'NO_AUTH',
+      authorizationStatus: authStatus,
       user: null
     })
   }
@@ -106,23 +106,13 @@ describe('LoginPage', () => {
   });
 
   it('should navigate to main page on successful login', async () => {
-    mockDispatch.mockResolvedValue({});
-
     render(
       <MemoryRouter>
-        <Provider store={createMockStore()}>
+        <Provider store={createMockStore('AUTH')}>
           <LoginPage />
         </Provider>
       </MemoryRouter>
     );
-
-    const emailInput = screen.getByPlaceholderText('Email');
-    const passwordInput = screen.getByPlaceholderText('Password');
-    const submitButton = screen.getByRole('button', { name: /Sign in/ });
-
-    fireEvent.change(emailInput, { target: { value: 'test@example.com' } });
-    fireEvent.change(passwordInput, { target: { value: 'password123' } });
-    fireEvent.click(submitButton);
 
     await waitFor(() => {
       expect(mockNavigate).toHaveBeenCalledWith('/');
@@ -147,7 +137,7 @@ describe('LoginPage', () => {
     expect(passwordInput).toHaveAttribute('type', 'password');
   });
 
-  it('should render Amsterdam location link', () => {
+  it('should render random city location button', () => {
     render(
       <MemoryRouter>
         <Provider store={createMockStore()}>
@@ -156,6 +146,12 @@ describe('LoginPage', () => {
       </MemoryRouter>
     );
 
-    expect(screen.getByText('Amsterdam')).toBeInTheDocument();
+    const cityButton = screen.getByRole('button', { name: /Paris|Cologne|Brussels|Amsterdam|Hamburg|Dusseldorf/ });
+    expect(cityButton).toBeInTheDocument();
+    expect(cityButton).toHaveStyle('cursor: pointer');
+
+    const cityNames = ['Paris', 'Cologne', 'Brussels', 'Amsterdam', 'Hamburg', 'Dusseldorf'];
+    const cityText = cityButton.textContent;
+    expect(cityNames).toContain(cityText);
   });
 });

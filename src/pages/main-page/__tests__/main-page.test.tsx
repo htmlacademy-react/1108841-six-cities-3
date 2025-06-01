@@ -100,6 +100,7 @@ describe('MainPage', () => {
     );
 
     expect(screen.getByText('No places to stay available')).toBeInTheDocument();
+    expect(screen.getByRole('banner')).toBeInTheDocument();
   });
 
   it('should show offers when available', () => {
@@ -111,7 +112,8 @@ describe('MainPage', () => {
       </MemoryRouter>
     );
 
-    expect(screen.getByText('1 places to stay in Paris')).toBeInTheDocument();
+    expect(screen.getByText(/place to stay in Paris/)).toBeInTheDocument();
     expect(screen.getByText('Test Offer')).toBeInTheDocument();
+    expect(screen.getByRole('banner')).toBeInTheDocument();
   });
 });

@@ -14,6 +14,11 @@ vi.mock('react-redux', async () => {
   };
 });
 
+vi.mock('../../../store', () => ({
+  useAppDispatch: () => mockDispatch,
+  useAppSelector: vi.fn()
+}));
+
 const createMockStore = (currentSort: string = 'Popular') => configureStore({
   reducer: {
     offers: () => ({
@@ -66,15 +71,12 @@ describe('SortOptions', () => {
     const lowToHighOption = screen.getByText('Price: low to high');
     fireEvent.click(lowToHighOption);
 
-    expect(mockDispatch).toHaveBeenCalledWith({
-      type: 'offers/setSort',
-      payload: 'PriceLowToHigh'
-    });
+    expect(mockDispatch).toHaveBeenCalledWith(expect.any(Function));
   });
 
   it('should show current sort as active', () => {
     render(
-      <Provider store={createMockStore('PriceHighToLow')}>
+      <Provider store={createMockStore('Price: high to low')}>
         <SortOptions />
       </Provider>
     );

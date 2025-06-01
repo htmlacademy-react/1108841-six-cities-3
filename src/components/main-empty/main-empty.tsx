@@ -1,4 +1,4 @@
-import { CityType } from '../const';
+import { CityType } from '../../const';
 
 type MainEmptyProps = {
   city: CityType;

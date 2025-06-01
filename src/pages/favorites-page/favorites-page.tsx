@@ -1,34 +1,71 @@
-import { Link } from 'react-router-dom';
+import { Link, useNavigate, Navigate } from 'react-router-dom';
 import Footer from '../../components/footer';
 import Header from '../../components/header';
-import { useSelector } from 'react-redux';
-import { favoriteOffersSelector } from '../../store/selectors';
-import { Offer } from '../../types/state';
+import { Offer, AuthorizationStatus } from '../../types/state';
 import { useEffect } from 'react';
 import { useAppDispatch, useAppSelector } from '../../store';
-import { fetchFavorites } from '../../store/thunks';
+import { fetchFavorites, toggleFavorite } from '../../store/thunks';
 import LoadingSpinner from '../../components/loading-spinner';
 import FavoritesPageEmpty from './favorites-page-empty';
+import { APP_ROUTE } from '../../const';
+import { getRating } from '../../utils/utils';
 
 function FavoritePage() {
   const dispatch = useAppDispatch();
+  const navigate = useNavigate();
   const isFavoritesLoading = useAppSelector((state) => state.offers.isFavoritesLoading);
+  const authorizationStatus = useAppSelector((state) => state.user.authorizationStatus);
+  const favoriteOffers = useAppSelector((state) => state.offers.favoriteOffers) || [];
 
   useEffect(() => {
-    dispatch(fetchFavorites());
-  }, [dispatch]);
+    if (authorizationStatus === AuthorizationStatus.Auth) {
+      dispatch(fetchFavorites());
+    }
+  }, [authorizationStatus, dispatch]);
 
-  const favoriteOffers = useSelector(favoriteOffersSelector);
+  if (authorizationStatus === AuthorizationStatus.NoAuth) {
+    return <Navigate to={APP_ROUTE.LOGIN} replace />;
+  }
+
+  if (authorizationStatus === AuthorizationStatus.Unknown) {
+    return (
+      <div className="page">
+        <main className="page__main page__main--favorites">
+          <LoadingSpinner />
+        </main>
+        <Footer />
+      </div>
+    );
+  }
+
+  const handleFavoriteClick = (offerId: string, isFavorite: boolean) => {
+    if (authorizationStatus !== AuthorizationStatus.Auth) {
+      navigate(APP_ROUTE.LOGIN);
+      return;
+    }
+    dispatch(toggleFavorite(offerId, isFavorite));
+  };
 
   if (isFavoritesLoading) {
-    return <LoadingSpinner message="Загружаем избранное..." />;
+    return (
+      <div className="page">
+        <main className="page__main page__main--favorites">
+          <LoadingSpinner />
+        </main>
+        <Footer />
+      </div>
+    );
   }
 
-  if (favoriteOffers.length === 0) {
-    return <FavoritesPageEmpty />;
+  if (!favoriteOffers || favoriteOffers.length === 0) {
+    return (
+      <div className="page page--favorites-empty">
+        <Header />
+        <FavoritesPageEmpty />
+      </div>
+    );
   }
 
-  // Группировка предложений по городам
   const offersByCity = favoriteOffers.reduce<Record<string, Offer[]>>((acc, offer) => {
     const cityName = offer.city.name;
     if (!acc[cityName]) {
@@ -64,7 +101,7 @@ function FavoritePage() {
                           </div>
                         )}
                         <div className="favorites__image-wrapper place-card__image-wrapper">
-                          <Link to={`/offer/${offer.id}`}>
+                          <Link to={`${APP_ROUTE.OFFER.replace(':id', offer.id)}`}>
                             <img
                               className="place-card__image"
                               src={offer.previewImage}
@@ -85,6 +122,7 @@ function FavoritePage() {
                             <button
                               className="place-card__bookmark-button place-card__bookmark-button--active button"
                               type="button"
+                              onClick={() => handleFavoriteClick(offer.id, offer.isFavorite)}
                             >
                               <svg
                                 className="place-card__bookmark-icon"
@@ -98,12 +136,12 @@ function FavoritePage() {
                           </div>
                           <div className="place-card__rating rating">
                             <div className="place-card__stars rating__stars">
-                              <span style={{ width: `${Math.round(offer.rating) * 20}%` }} />
+                              <span style={{ width: getRating(offer.rating) }} />
                               <span className="visually-hidden">Rating</span>
                             </div>
                           </div>
                           <h2 className="place-card__name">
-                            <Link to={`/offer/${offer.id}`}>{offer.title}</Link>
+                            <Link to={`${APP_ROUTE.OFFER.replace(':id', offer.id)}`}>{offer.title}</Link>
                           </h2>
                           <p className="place-card__type">{offer.type}</p>
                         </div>

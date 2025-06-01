@@ -1,18 +1,18 @@
-import { useDispatch, useSelector } from 'react-redux';
+import { useSelector } from 'react-redux';
 import { useState, useRef, useEffect } from 'react';
-import { RootState } from '../../store';
-import { setSort } from '../../store/offers-slice';
-import { SortType } from '../../types/state';
+import { RootState, useAppDispatch } from '../../store';
+import { changeSortType } from '../../store/thunks';
+import { SortType } from '../../const';
 
-const SORTS: { label: string; value: SortType }[] = [
-  { label: 'Popular', value: 'Popular' },
-  { label: 'Price: low to high', value: 'PriceLowToHigh' },
-  { label: 'Price: high to low', value: 'PriceHighToLow' },
-  { label: 'Top rated first', value: 'TopRated' }
+const SORTS: { label: string; value: string }[] = [
+  { label: 'Popular', value: SortType.Popular },
+  { label: 'Price: low to high', value: SortType.PriceLowToHigh },
+  { label: 'Price: high to low', value: SortType.PriceHighToLow },
+  { label: 'Top rated first', value: SortType.TopRatedFirst }
 ];
 
 export function SortOptions() {
-  const dispatch = useDispatch();
+  const dispatch = useAppDispatch();
   const sort = useSelector((state: RootState) => state.offers.sort);
   const [opened, setOpened] = useState(false);
   const ref = useRef<HTMLFormElement>(null);
@@ -30,8 +30,8 @@ export function SortOptions() {
     return () => document.removeEventListener('mousedown', handleClick);
   }, [opened]);
 
-  const handleSelect = (value: SortType) => {
-    dispatch(setSort(value));
+  const handleSelect = (value: string) => {
+    dispatch(changeSortType(value));
     setOpened(false);
   };
 

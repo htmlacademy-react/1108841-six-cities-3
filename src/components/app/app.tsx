@@ -1,63 +1,28 @@
-import { Routes, Route, BrowserRouter } from 'react-router-dom';
-import { useEffect } from 'react';
+import React, { useEffect } from 'react';
+import { BrowserRouter, Routes, Route } from 'react-router-dom';
+import { useAppDispatch } from '../../store';
+import { fetchOffersThunk, checkAuthThunk } from '../../store/api-actions';
 import { APP_ROUTE } from '../../const';
-import MainPage from '../../pages/main-page';
-import NotFoundPage from '../../pages/404-page';
-import FavoritesPage from '../../pages/favorites-page';
-import OfferPage from '../../pages/offer-page';
-import LoginPage from '../../pages/login-page';
-import PrivateRoute from '../private/private';
-import { useSelector } from 'react-redux';
-import { RootState } from '../../store';
-import { checkAuth, fetchOffers } from '../../store/thunks';
-import { AuthorizationStatus } from '../../types/state';
-import { useAppDispatch } from '../../hooks/use-app-dispatch';
-
-const MAIN_ROUTE = APP_ROUTE.MAIN as string;
-const LOGIN_ROUTE = APP_ROUTE.LOGIN as string;
-const FAVORITES_ROUTE = APP_ROUTE.FAVORITES as string;
-const OFFER_ROUTE = APP_ROUTE.OFFER as string;
-const NOT_FOUND_ROUTE = APP_ROUTE.NOT_FOUND as string;
+import MainPage from '../../pages/main-page/main-page';
+import LoginPage from '../../pages/login-page/login-page';
+import FavoritesPage from '../../pages/favorites-page/favorites-page';
+import OfferPage from '../../pages/offer-page/offer-page';
+import NotFoundPage from '../../pages/404-page/404-page';
 
 function App() {
   const dispatch = useAppDispatch();
-  const authorizationStatus = useSelector((state: RootState) => state.user.authorizationStatus);
-
   useEffect(() => {
-    dispatch(checkAuth());
-    dispatch(fetchOffers());
+    dispatch(checkAuthThunk());
+    dispatch(fetchOffersThunk());
   }, [dispatch]);
-
-  if (authorizationStatus === AuthorizationStatus.Unknown) {
-    return null;
-  }
-
-  return (
-    <BrowserRouter>
-      <Routes>
-        <Route
-          path={MAIN_ROUTE}
-          element={<MainPage />}
-        />
-        <Route path={LOGIN_ROUTE} element={<LoginPage />} />
-        <Route
-          element={
-            <PrivateRoute
-              authorizationStatus={authorizationStatus}
-              redirectPath={LOGIN_ROUTE}
-            />
-          }
-        >
-          <Route
-            path={FAVORITES_ROUTE}
-            element={<FavoritesPage />}
-          />
-        </Route>
-        <Route path={OFFER_ROUTE} element={<OfferPage />} />
-        <Route path={NOT_FOUND_ROUTE} element={<NotFoundPage />} />
-      </Routes>
-    </BrowserRouter>
+  return React.createElement(BrowserRouter, {},
+    React.createElement(Routes, {},
+      React.createElement(Route, { path: APP_ROUTE.MAIN, element: React.createElement(MainPage) }),
+      React.createElement(Route, { path: APP_ROUTE.LOGIN, element: React.createElement(LoginPage) }),
+      React.createElement(Route, { path: APP_ROUTE.FAVORITES, element: React.createElement(FavoritesPage) }),
+      React.createElement(Route, { path: APP_ROUTE.OFFER, element: React.createElement(OfferPage) }),
+      React.createElement(Route, { path: '*', element: React.createElement(NotFoundPage) })
+    )
   );
 }
-
 export default App;

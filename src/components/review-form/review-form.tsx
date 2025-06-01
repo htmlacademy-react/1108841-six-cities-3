@@ -61,11 +61,15 @@ function ReviewForm({ offerId, className = '' }: ReviewFormProps): JSX.Element |
     evt.preventDefault();
     setIsSubmitting(true);
     dispatch(submitReview(offerId, formData))
+      .unwrap()
       .then(() => {
         setFormData({
           rating: 0,
           comment: '',
         });
+      })
+      .catch(() => {
+
       })
       .finally(() => {
         setIsSubmitting(false);

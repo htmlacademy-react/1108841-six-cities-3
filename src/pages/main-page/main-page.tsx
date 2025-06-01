@@ -1,28 +1,20 @@
 import { useAppSelector } from '../../store';
 import MainEmpty from '../../components/main-empty';
-import OfferList from '../../components/offer-list';
-import Sort from '../../components/sort';
-import { CityType, SortTypeType } from '../../const';
+import CardListMain from '../../components/offer-list';
+import { SortOptions } from '../../components/sort-options/sort-options';
+import { CityType } from '../../const';
 import { Map } from '../../components/map';
 import CitiesList from '../../components/cities-list/cities-list';
-import { useAppDispatch } from '../../hooks/use-app-dispatch';
-import { setSort } from '../../store/offers-slice';
 import LoadingSpinner from '../../components/loading-spinner';
+import Header from '../../components/header';
+import { sortedOffersSelector } from '../../store/selectors';
 
 function MainPage(): JSX.Element {
-  const dispatch = useAppDispatch();
   const city = useAppSelector((state) => state.offers.city);
-  const offers = useAppSelector((state) => state.offers.offers);
   const activeOfferId = useAppSelector((state) => state.offers.activeOfferId);
-  const currentSort = useAppSelector((state) => state.offers.sort) as SortTypeType;
   const isOffersLoading = useAppSelector((state) => state.offers.isOffersLoading);
   const offersError = useAppSelector((state) => state.offers.offersError);
-
-  const filteredOffers = offers.filter((offer) => offer.city.name === city.name);
-
-  const handleSortChange = (sort: SortTypeType) => {
-    dispatch(setSort(sort));
-  };
+  const sortedOffers = useAppSelector(sortedOffersSelector);
 
   if (isOffersLoading) {
     return <LoadingSpinner message="Загружаем предложения..." withHeader={false} />;
@@ -43,7 +35,8 @@ function MainPage(): JSX.Element {
 
   return (
     <div className="page page--gray page--main">
-      <main className="page__main page__main--index">
+      <Header />
+      <main className={`page__main page__main--index${sortedOffers.length === 0 ? ' page__main--index-empty' : ''}`}>
         <h1 className="visually-hidden">Cities</h1>
         <div className="tabs">
           <section className="locations container">
@@ -51,19 +44,21 @@ function MainPage(): JSX.Element {
           </section>
         </div>
         <div className="cities">
-          {filteredOffers.length === 0 ? (
+          {sortedOffers.length === 0 ? (
             <MainEmpty city={city.name as CityType} />
           ) : (
             <div className="cities__places-container container">
               <section className="cities__places places">
                 <h2 className="visually-hidden">Places</h2>
-                <b className="places__found">{filteredOffers.length} places to stay in {city.name}</b>
-                <Sort currentSort={currentSort} onSortChange={handleSortChange} />
-                <OfferList offers={filteredOffers} />
+                <b className="places__found">
+                  {sortedOffers.length} {sortedOffers.length === 1 ? 'place' : 'places'} to stay in {city.name}
+                </b>
+                <SortOptions />
+                <CardListMain offers={sortedOffers} />
               </section>
               <div className="cities__right-section">
                 <Map
-                  offers={filteredOffers}
+                  offers={sortedOffers}
                   activeOfferId={activeOfferId}
                   lat={city.location.latitude}
                   lng={city.location.longitude}
