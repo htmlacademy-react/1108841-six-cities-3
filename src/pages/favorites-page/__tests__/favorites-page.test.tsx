@@ -5,119 +5,102 @@ import { MemoryRouter } from 'react-router-dom';
 import { vi } from 'vitest';
 import FavoritePage from '../favorites-page';
 import { AuthorizationStatus } from '../../../types/state';
-import { RootState } from '../../../store';
+import type { RootState } from '../../../store';
 
 const mockDispatch = vi.fn();
+let mockState: RootState;
 
 vi.mock('../../../store', () => ({
   useAppDispatch: () => mockDispatch,
-  useAppSelector: (selector: (state: RootState) => unknown) => {
-    const mockState = {
-      user: {
-        authorizationStatus: AuthorizationStatus.Auth,
-        user: {
-          id: 1,
-          email: 'test@test.com',
-          avatarUrl: 'test.jpg',
-          name: 'Test User',
-          isPro: true
-        }
-      },
-      offers: {
-        city: {
-          name: 'Paris',
-          location: {
-            latitude: 48.85661,
-            longitude: 2.351499,
-            zoom: 13
-          }
-        },
-        offers: [],
-        favoriteOffers: [],
-        sort: 'Popular',
-        activeOfferId: null,
-        isOffersLoading: false,
-        offersError: null,
-        currentOffer: null,
-        nearbyOffers: [],
-        isFavoritesLoading: false,
-        isCurrentOfferLoading: false,
-      }
-    } as RootState;
-    return selector(mockState);
-  }
+  useAppSelector: (selector: (state: RootState) => unknown) => selector(mockState)
 }));
 
 vi.mock('../../../store/selectors', () => ({
-  favoriteOffersSelector: () => []
+  favoriteOffersSelector: (state: RootState) => state.offers.favoriteOffers
 }));
 
-const createMockStore = (isLoading = false, hasFavorites = false) => configureStore({
-  reducer: {
-    user: () => ({
-      authorizationStatus: AuthorizationStatus.Auth,
-      user: {
-        id: 1,
-        email: 'test@test.com',
-        avatarUrl: 'test.jpg',
-        name: 'Test User',
-        isPro: true
+const createInitialState = (isLoading = false, hasFavorites = false): RootState => ({
+  user: {
+    authorizationStatus: AuthorizationStatus.Auth,
+    user: {
+      id: 1,
+      email: 'test@test.com',
+      avatarUrl: 'test.jpg',
+      name: 'Test User',
+      isPro: true
+    }
+  },
+  offers: {
+    city: {
+      name: 'Paris',
+      location: {
+        latitude: 48.85661,
+        longitude: 2.351499,
+        zoom: 13
       }
-    }),
-    offers: () => ({
+    },
+    offers: [],
+    favoriteOffers: hasFavorites ? [{
+      id: '1',
+      title: 'Test Favorite Offer',
+      type: 'apartment',
+      price: 120,
+      rating: 4.5,
+      previewImage: 'test.jpg',
+      isPremium: true,
+      isFavorite: true,
       city: {
-        name: 'Paris',
-        location: {
-          latitude: 48.85661,
-          longitude: 2.351499,
-          zoom: 13
-        }
-      },
-      offers: [],
-      favoriteOffers: hasFavorites ? [{
-        id: '1',
-        title: 'Test Favorite Offer',
-        type: 'apartment',
-        price: 120,
-        rating: 4.5,
-        previewImage: 'test.jpg',
-        isPremium: true,
-        isFavorite: true,
-        city: {
-          name: 'Amsterdam',
-          location: {
-            latitude: 52.3909553943508,
-            longitude: 4.85309666406198,
-            zoom: 8
-          }
-        },
+        name: 'Amsterdam',
         location: {
           latitude: 52.3909553943508,
           longitude: 4.85309666406198,
           zoom: 8
-        },
-        bedrooms: 2,
-        maxAdults: 3,
-        goods: ['WiFi'],
-        host: {
-          name: 'Host',
-          avatarUrl: 'host.jpg',
-          isPro: true
-        },
-        description: 'Description',
-        images: ['image1.jpg']
-      }] : [],
-      sort: 'Popular',
-      activeOfferId: null,
-      isOffersLoading: false,
-      offersError: null,
-      currentOffer: null,
-      nearbyOffers: [],
-      isFavoritesLoading: isLoading,
-      isCurrentOfferLoading: false,
-    })
+        }
+      },
+      location: {
+        latitude: 52.3909553943508,
+        longitude: 4.85309666406198,
+        zoom: 8
+      },
+      bedrooms: 2,
+      maxAdults: 3,
+      goods: ['WiFi'],
+      host: {
+        name: 'Host',
+        avatarUrl: 'host.jpg',
+        isPro: true
+      },
+      description: 'Description',
+      images: ['image1.jpg']
+    }] : [],
+    sort: 'Popular',
+    activeOfferId: null,
+    isOffersLoading: false,
+    offersError: null,
+    currentOffer: null,
+    nearbyOffers: [],
+    isFavoritesLoading: isLoading,
+    isCurrentOfferLoading: false,
+  },
+  reviews: {
+    reviews: [],
+    isReviewsLoading: false,
+    reviewsError: null
   }
 });
+
+const createMockStore = (isLoading = false, hasFavorites = false) => {
+  const initialState = createInitialState(isLoading, hasFavorites);
+  mockState = initialState;
+
+  return configureStore({
+    reducer: {
+      user: () => initialState.user,
+      offers: () => initialState.offers,
+      reviews: () => initialState.reviews
+    }
+  });
+};
 
 describe('FavoritePage', () => {
   beforeEach(() => {
