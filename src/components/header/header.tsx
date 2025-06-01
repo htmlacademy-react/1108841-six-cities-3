@@ -2,8 +2,6 @@ import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { APP_ROUTE } from '../../const';
 import { useSelector } from 'react-redux';
 import { RootState, useAppDispatch } from '../../store';
-import { useEffect } from 'react';
-import { checkAuthThunk } from '../../store/api-actions';
 import { AuthorizationStatus } from '../../types/state';
 import { logoutThunk } from '../../store/api-actions';
 
@@ -19,12 +17,6 @@ function Header(): JSX.Element {
   const favoriteOffers = useSelector((state: RootState) => state.offers.favoriteOffers);
 
   const favoritesCount = favoriteOffers ? favoriteOffers.length : 0;
-
-  useEffect(() => {
-    if (authorizationStatus === AuthorizationStatus.Unknown) {
-      dispatch(checkAuthThunk());
-    }
-  }, [authorizationStatus, dispatch]);
 
   const shouldRenderUser = pathname !== APP_ROUTE.LOGIN;
   const linkClassName = pathname === APP_ROUTE.MAIN ? ' header__logo-link--active' : '';

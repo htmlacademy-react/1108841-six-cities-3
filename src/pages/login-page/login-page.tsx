@@ -32,7 +32,7 @@ function LoginPage(): JSX.Element {
     navigate(MAIN_ROUTE);
   };
 
-  const handleSubmit = (evt: FormEvent<HTMLFormElement>) => {
+  const handleSubmit = async (evt: FormEvent<HTMLFormElement>) => {
     evt.preventDefault();
     setError('');
 
@@ -56,20 +56,22 @@ function LoginPage(): JSX.Element {
     }
 
     setIsSubmitting(true);
-    dispatch(loginThunk({ email, password }));
+
+    try {
+      await dispatch(loginThunk({ email, password })).unwrap();
+      navigate(MAIN_ROUTE);
+    } catch (loginError) {
+      setError('Ошибка авторизации');
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   useEffect(() => {
-    if (isSubmitting) {
-      if (authorizationStatus === AuthorizationStatus.Auth) {
-        setIsSubmitting(false);
-        navigate(MAIN_ROUTE);
-      } else if (authorizationStatus === AuthorizationStatus.NoAuth) {
-        setIsSubmitting(false);
-        setError('Ошибка авторизации');
-      }
+    if (authorizationStatus === AuthorizationStatus.Auth) {
+      navigate(MAIN_ROUTE);
     }
-  }, [authorizationStatus, isSubmitting, navigate]);
+  }, [authorizationStatus, navigate]);
 
   return (
     <div className="page page--gray page--login">
@@ -94,7 +96,14 @@ function LoginPage(): JSX.Element {
                 {error}
               </div>
             )}
-            <form className="login__form form" action="#" method="post" onSubmit={handleSubmit}>
+            <form
+              className="login__form form"
+              action="#"
+              method="post"
+              onSubmit={(evt) => {
+                void handleSubmit(evt);
+              }}
+            >
               <div className="login__input-wrapper form__input-wrapper">
                 <label className="visually-hidden">E-mail</label>
                 <input

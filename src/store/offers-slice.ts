@@ -175,6 +175,9 @@ const offersSlice = createSlice({
           state.favoriteOffers = (state.favoriteOffers || []).filter((o) => o.id !== id);
         }
       })
+      .addCase(toggleFavoriteThunk.rejected, (state, action) => {
+        state.offersError = action.error.message || 'Ошибка изменения избранного';
+      })
       .addCase(fetchFavoritesThunk.pending, (state) => {
         state.isFavoritesLoading = true;
       })
