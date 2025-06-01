@@ -1,7 +1,7 @@
-import { useDispatch, useSelector } from 'react-redux';
+import { useSelector } from 'react-redux';
 import { useState, useRef, useEffect } from 'react';
-import { RootState } from '../../store';
-import { setSort } from '../../store/offers-slice';
+import { RootState, useAppDispatch } from '../../store';
+import { changeSortType } from '../../store/thunks';
 import { SortType } from '../../const';
 
 const SORTS: { label: string; value: string }[] = [
@@ -12,7 +12,7 @@ const SORTS: { label: string; value: string }[] = [
 ];
 
 export function SortOptions() {
-  const dispatch = useDispatch();
+  const dispatch = useAppDispatch();
   const sort = useSelector((state: RootState) => state.offers.sort);
   const [opened, setOpened] = useState(false);
   const ref = useRef<HTMLFormElement>(null);
@@ -31,7 +31,7 @@ export function SortOptions() {
   }, [opened]);
 
   const handleSelect = (value: string) => {
-    dispatch(setSort(value));
+    dispatch(changeSortType(value));
     setOpened(false);
   };
 

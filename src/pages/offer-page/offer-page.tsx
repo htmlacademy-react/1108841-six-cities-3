@@ -6,8 +6,7 @@ import { ReviewList } from '../../components/review';
 import { CardType } from '../../types/offer-type';
 import { Map } from '../../components/map';
 import { useAppDispatch, useAppSelector } from '../../store';
-import { fetchOfferById, fetchNearbyOffersById, fetchReviewsById, toggleFavorite } from '../../store/thunks';
-import { setCurrentOffer } from '../../store/offers-slice';
+import { fetchOfferById, fetchNearbyOffersById, fetchReviewsById, toggleFavorite, clearCurrentOffer } from '../../store/thunks';
 import { sortedReviewsSelector } from '../../store/selectors';
 import LoadingSpinner from '../../components/loading-spinner';
 import { AuthorizationStatus } from '../../types/state';
@@ -28,7 +27,7 @@ export default function OfferPage() {
 
   useEffect(() => {
     if (id) {
-      dispatch(setCurrentOffer(null));
+      dispatch(clearCurrentOffer());
       dispatch(fetchOfferById(id));
       dispatch(fetchNearbyOffersById(id));
       dispatch(fetchReviewsById(id));

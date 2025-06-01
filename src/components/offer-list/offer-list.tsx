@@ -1,8 +1,8 @@
 import Card from '../offer-card/offer-card';
 import { Offer } from '../../types/state';
 import { CardType } from '../../types/offer-type';
-import { useDispatch } from 'react-redux';
-import { setActiveOffer } from '../../store/offers-slice';
+import { useAppDispatch } from '../../store';
+import { changeActiveOffer } from '../../store/thunks';
 import { useCallback } from 'react';
 
 type OfferListProps = {
@@ -24,14 +24,14 @@ function mapOffersToCardType(offer: Offer): CardType {
 }
 
 function CardListMain({ offers }: OfferListProps) {
-  const dispatch = useDispatch();
+  const dispatch = useAppDispatch();
 
   const handleCardHover = useCallback((offerId: string) => {
-    dispatch(setActiveOffer(offerId));
+    dispatch(changeActiveOffer(offerId));
   }, [dispatch]);
 
   const handleCardLeave = useCallback(() => {
-    dispatch(setActiveOffer(null));
+    dispatch(changeActiveOffer(null));
   }, [dispatch]);
 
   return (

@@ -1,5 +1,5 @@
 import { ThunkActionResult } from './action';
-import { setFavoritesLoading, setFavoriteOffers } from './offers-slice';
+import { setFavoritesLoading, setFavoriteOffers, setSort, setActiveOffer, setCurrentOffer } from './offers-slice';
 import { getFavorites } from '../services/api';
 import {
   fetchOffersThunk,
@@ -63,3 +63,18 @@ export const fetchFavorites = (): ThunkActionResult =>
 
 export const toggleFavorite = (offerId: string, isFavorite: boolean) =>
   toggleFavoriteThunk({ offerId, status: isFavorite ? 0 : 1 });
+
+export const changeSortType = (sortType: string): ThunkActionResult<void> =>
+  (dispatch) => {
+    dispatch(setSort(sortType));
+  };
+
+export const changeActiveOffer = (offerId: string | null): ThunkActionResult<void> =>
+  (dispatch) => {
+    dispatch(setActiveOffer(offerId));
+  };
+
+export const clearCurrentOffer = (): ThunkActionResult<void> =>
+  (dispatch) => {
+    dispatch(setCurrentOffer(null));
+  };
