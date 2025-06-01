@@ -147,7 +147,7 @@ describe('LoginPage', () => {
     expect(passwordInput).toHaveAttribute('type', 'password');
   });
 
-  it('should render Amsterdam location link', () => {
+  it('should render random city location button', () => {
     render(
       <MemoryRouter>
         <Provider store={createMockStore()}>
@@ -156,6 +156,12 @@ describe('LoginPage', () => {
       </MemoryRouter>
     );
 
-    expect(screen.getByText('Amsterdam')).toBeInTheDocument();
+    const cityButton = screen.getByRole('button', { name: /Paris|Cologne|Brussels|Amsterdam|Hamburg|Dusseldorf/ });
+    expect(cityButton).toBeInTheDocument();
+    expect(cityButton).toHaveStyle('cursor: pointer');
+
+    const cityNames = ['Paris', 'Cologne', 'Brussels', 'Amsterdam', 'Hamburg', 'Dusseldorf'];
+    const cityText = cityButton.textContent;
+    expect(cityNames).toContain(cityText);
   });
 });

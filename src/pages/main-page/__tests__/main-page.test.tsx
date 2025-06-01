@@ -75,6 +75,7 @@ describe('MainPage', () => {
     );
 
     expect(screen.getByText('Загружаем предложения...')).toBeInTheDocument();
+    expect(screen.getByRole('banner')).toBeInTheDocument();
   });
 
   it('should show error message when there is an error', () => {
@@ -88,6 +89,7 @@ describe('MainPage', () => {
 
     expect(screen.getByText('Ошибка')).toBeInTheDocument();
     expect(screen.getByText('Test error')).toBeInTheDocument();
+    expect(screen.getByRole('banner')).toBeInTheDocument();
   });
 
   it('should show empty state when no offers available', () => {
@@ -100,6 +102,7 @@ describe('MainPage', () => {
     );
 
     expect(screen.getByText('No places to stay available')).toBeInTheDocument();
+    expect(screen.getByRole('banner')).toBeInTheDocument();
   });
 
   it('should show offers when available', () => {
@@ -113,5 +116,6 @@ describe('MainPage', () => {
 
     expect(screen.getByText('1 places to stay in Paris')).toBeInTheDocument();
     expect(screen.getByText('Test Offer')).toBeInTheDocument();
+    expect(screen.getByRole('banner')).toBeInTheDocument();
   });
 });

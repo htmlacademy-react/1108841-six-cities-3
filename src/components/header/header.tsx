@@ -9,6 +9,7 @@ function Header(): JSX.Element {
   const dispatch = useAppDispatch();
   const authorizationStatus = useAppSelector((state) => state.user.authorizationStatus);
   const user = useAppSelector((state) => state.user.user);
+  const favoriteOffers = useAppSelector((state) => state.offers?.favoriteOffers) || [];
 
   const handleLogoutClick = () => {
     dispatch(logout());
@@ -28,15 +29,22 @@ function Header(): JSX.Element {
               {authorizationStatus === AuthorizationStatus.Auth ? (
                 <>
                   <li className="header__nav-item user">
-                    <div className="header__nav-profile">
-                      <div className="header__avatar-wrapper user__avatar-wrapper"></div>
+                    <Link className="header__nav-link header__nav-link--profile" to={APP_ROUTE.FAVORITES}>
+                      <div className="header__avatar-wrapper user__avatar-wrapper">
+                        <img src={user?.avatarUrl} alt="User avatar" width="20" height="20" />
+                      </div>
                       <span className="header__user-name user__name">{user?.email}</span>
-                    </div>
+                      <span className="header__favorite-count">{favoriteOffers?.length || 0}</span>
+                    </Link>
                   </li>
                   <li className="header__nav-item">
-                    <Link className="header__nav-link" to={APP_ROUTE.MAIN} onClick={handleLogoutClick}>
-                      <span className="header__signout">Sign out</span>
-                    </Link>
+                    <button
+                      className="header__nav-link header__signout"
+                      type="button"
+                      onClick={handleLogoutClick}
+                    >
+                      Sign out
+                    </button>
                   </li>
                 </>
               ) : (

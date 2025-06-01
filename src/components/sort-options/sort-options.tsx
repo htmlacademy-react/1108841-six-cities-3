@@ -2,13 +2,13 @@ import { useDispatch, useSelector } from 'react-redux';
 import { useState, useRef, useEffect } from 'react';
 import { RootState } from '../../store';
 import { setSort } from '../../store/offers-slice';
-import { SortType } from '../../types/state';
+import { SortType } from '../../const';
 
-const SORTS: { label: string; value: SortType }[] = [
-  { label: 'Popular', value: 'Popular' },
-  { label: 'Price: low to high', value: 'PriceLowToHigh' },
-  { label: 'Price: high to low', value: 'PriceHighToLow' },
-  { label: 'Top rated first', value: 'TopRated' }
+const SORTS: { label: string; value: string }[] = [
+  { label: 'Popular', value: SortType.Popular },
+  { label: 'Price: low to high', value: SortType.PriceLowToHigh },
+  { label: 'Price: high to low', value: SortType.PriceHighToLow },
+  { label: 'Top rated first', value: SortType.TopRatedFirst }
 ];
 
 export function SortOptions() {
@@ -30,7 +30,7 @@ export function SortOptions() {
     return () => document.removeEventListener('mousedown', handleClick);
   }, [opened]);
 
-  const handleSelect = (value: SortType) => {
+  const handleSelect = (value: string) => {
     dispatch(setSort(value));
     setOpened(false);
   };

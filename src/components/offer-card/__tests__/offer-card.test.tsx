@@ -20,12 +20,6 @@ vi.mock('react-router-dom', async () => {
 
 vi.mock('../../../store', () => ({
   useAppDispatch: () => mockDispatch,
-  useSelector: (selector: (state: { user: { authorizationStatus: AuthorizationStatus } }) => AuthorizationStatus) => {
-    const state = {
-      user: { authorizationStatus: AuthorizationStatus.Auth }
-    };
-    return selector(state);
-  }
 }));
 
 const mockCard: CardType = {
@@ -44,11 +38,63 @@ const mockCard: CardType = {
   }
 };
 
-const createMockStore = (authStatus: AuthorizationStatus) => configureStore({
+const createMockStore = (authStatus: AuthorizationStatus, cardId = '1', cardIsFavorite = false) => configureStore({
   reducer: {
     user: () => ({
       authorizationStatus: authStatus,
       user: null
+    }),
+    offers: () => ({
+      city: {
+        name: 'Paris',
+        location: {
+          latitude: 48.85661,
+          longitude: 2.351499,
+          zoom: 13
+        }
+      },
+      offers: [{
+        id: cardId,
+        title: 'Test Offer',
+        type: 'apartment',
+        price: 120,
+        rating: 4.5,
+        previewImage: 'test.jpg',
+        isPremium: true,
+        isFavorite: cardIsFavorite,
+        city: {
+          name: 'Amsterdam',
+          location: {
+            latitude: 52.3909553943508,
+            longitude: 4.85309666406198,
+            zoom: 8
+          }
+        },
+        location: {
+          latitude: 52.3909553943508,
+          longitude: 4.85309666406198,
+          zoom: 8
+        },
+        bedrooms: 2,
+        maxAdults: 3,
+        goods: ['WiFi'],
+        host: {
+          name: 'Host',
+          avatarUrl: 'host.jpg',
+          isPro: true
+        },
+        description: 'Description',
+        images: ['image1.jpg']
+      }],
+      favoriteOffers: [],
+      sort: 'Popular',
+      activeOfferId: null,
+      isOffersLoading: false,
+      offersError: null,
+      currentOffer: null,
+      nearbyOffers: [],
+      isFavoritesLoading: false,
+      isCurrentOfferLoading: false,
     })
   }
 });
@@ -111,7 +157,7 @@ describe('Card', () => {
   });
 
   it('should show active favorite button when card is favorite', () => {
-    const mockStore = createMockStore(AuthorizationStatus.Auth);
+    const mockStore = createMockStore(AuthorizationStatus.Auth, '1', true);
     const favoriteCard = { ...mockCard, isFavorite: true };
 
     render(

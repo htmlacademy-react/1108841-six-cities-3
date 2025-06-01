@@ -68,13 +68,13 @@ describe('SortOptions', () => {
 
     expect(mockDispatch).toHaveBeenCalledWith({
       type: 'offers/setSort',
-      payload: 'PriceLowToHigh'
+      payload: 'Price: low to high'
     });
   });
 
   it('should show current sort as active', () => {
     render(
-      <Provider store={createMockStore('PriceHighToLow')}>
+      <Provider store={createMockStore('Price: high to low')}>
         <SortOptions />
       </Provider>
     );

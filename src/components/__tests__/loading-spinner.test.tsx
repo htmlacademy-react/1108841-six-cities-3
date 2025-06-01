@@ -16,6 +16,26 @@ const createMockStore = () => configureStore({
         name: 'Test User',
         isPro: true
       }
+    }),
+    offers: () => ({
+      city: {
+        name: 'Paris',
+        location: {
+          latitude: 48.85661,
+          longitude: 2.351499,
+          zoom: 13
+        }
+      },
+      offers: [],
+      favoriteOffers: [],
+      sort: 'Popular',
+      activeOfferId: null,
+      isOffersLoading: false,
+      offersError: null,
+      currentOffer: null,
+      nearbyOffers: [],
+      isFavoritesLoading: false,
+      isCurrentOfferLoading: false,
     })
   }
 });

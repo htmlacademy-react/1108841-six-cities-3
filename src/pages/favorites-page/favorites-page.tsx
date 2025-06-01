@@ -1,30 +1,41 @@
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import Footer from '../../components/footer';
 import Header from '../../components/header';
 import { useSelector } from 'react-redux';
 import { favoriteOffersSelector } from '../../store/selectors';
-import { Offer } from '../../types/state';
+import { Offer, AuthorizationStatus } from '../../types/state';
 import { useEffect } from 'react';
 import { useAppDispatch, useAppSelector } from '../../store';
-import { fetchFavorites } from '../../store/thunks';
+import { fetchFavorites, toggleFavorite } from '../../store/thunks';
 import LoadingSpinner from '../../components/loading-spinner';
 import FavoritesPageEmpty from './favorites-page-empty';
+import { APP_ROUTE } from '../../const';
 
 function FavoritePage() {
   const dispatch = useAppDispatch();
+  const navigate = useNavigate();
   const isFavoritesLoading = useAppSelector((state) => state.offers.isFavoritesLoading);
+  const authorizationStatus = useAppSelector((state) => state.user.authorizationStatus);
 
   useEffect(() => {
     dispatch(fetchFavorites());
   }, [dispatch]);
 
-  const favoriteOffers = useSelector(favoriteOffersSelector);
+  const favoriteOffers = useSelector(favoriteOffersSelector) || [];
+
+  const handleFavoriteClick = (offerId: string, isFavorite: boolean) => {
+    if (authorizationStatus !== AuthorizationStatus.Auth) {
+      navigate(APP_ROUTE.LOGIN);
+      return;
+    }
+    dispatch(toggleFavorite(offerId, isFavorite));
+  };
 
   if (isFavoritesLoading) {
     return <LoadingSpinner message="Загружаем избранное..." />;
   }
 
-  if (favoriteOffers.length === 0) {
+  if (!favoriteOffers || favoriteOffers.length === 0) {
     return <FavoritesPageEmpty />;
   }
 
@@ -85,6 +96,7 @@ function FavoritePage() {
                             <button
                               className="place-card__bookmark-button place-card__bookmark-button--active button"
                               type="button"
+                              onClick={() => handleFavoriteClick(offer.id, offer.isFavorite)}
                             >
                               <svg
                                 className="place-card__bookmark-icon"

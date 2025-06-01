@@ -1,9 +1,56 @@
-import { render, screen } from '@testing-library/react';
+import { render, screen, fireEvent } from '@testing-library/react';
 import { Provider } from 'react-redux';
 import { configureStore } from '@reduxjs/toolkit';
 import { MemoryRouter } from 'react-router-dom';
+import { vi } from 'vitest';
 import FavoritePage from '../favorites-page';
 import { AuthorizationStatus } from '../../../types/state';
+import { RootState } from '../../../store';
+
+const mockDispatch = vi.fn();
+
+vi.mock('../../../store', () => ({
+  useAppDispatch: () => mockDispatch,
+  useAppSelector: (selector: (state: RootState) => unknown) => {
+    const mockState = {
+      user: {
+        authorizationStatus: AuthorizationStatus.Auth,
+        user: {
+          id: 1,
+          email: 'test@test.com',
+          avatarUrl: 'test.jpg',
+          name: 'Test User',
+          isPro: true
+        }
+      },
+      offers: {
+        city: {
+          name: 'Paris',
+          location: {
+            latitude: 48.85661,
+            longitude: 2.351499,
+            zoom: 13
+          }
+        },
+        offers: [],
+        favoriteOffers: [],
+        sort: 'Popular',
+        activeOfferId: null,
+        isOffersLoading: false,
+        offersError: null,
+        currentOffer: null,
+        nearbyOffers: [],
+        isFavoritesLoading: false,
+        isCurrentOfferLoading: false,
+      }
+    } as RootState;
+    return selector(mockState);
+  }
+}));
+
+vi.mock('../../../store/selectors', () => ({
+  favoriteOffersSelector: () => []
+}));
 
 const createMockStore = (isLoading = false, hasFavorites = false) => configureStore({
   reducer: {
@@ -26,7 +73,8 @@ const createMockStore = (isLoading = false, hasFavorites = false) => configureSt
           zoom: 13
         }
       },
-      offers: hasFavorites ? [{
+      offers: [],
+      favoriteOffers: hasFavorites ? [{
         id: '1',
         title: 'Test Favorite Offer',
         type: 'apartment',
@@ -66,11 +114,16 @@ const createMockStore = (isLoading = false, hasFavorites = false) => configureSt
       currentOffer: null,
       nearbyOffers: [],
       isFavoritesLoading: isLoading,
+      isCurrentOfferLoading: false,
     })
   }
 });
 
 describe('FavoritePage', () => {
+  beforeEach(() => {
+    vi.clearAllMocks();
+  });
+
   it('should show loading spinner when favorites are loading', () => {
     render(
       <MemoryRouter>
@@ -107,5 +160,20 @@ describe('FavoritePage', () => {
     expect(screen.getByText('Saved listing')).toBeInTheDocument();
     expect(screen.getByText('Test Favorite Offer')).toBeInTheDocument();
     expect(screen.getByText('Amsterdam')).toBeInTheDocument();
+  });
+
+  it('should handle favorite removal when bookmark button is clicked', () => {
+    render(
+      <MemoryRouter>
+        <Provider store={createMockStore(false, true)}>
+          <FavoritePage />
+        </Provider>
+      </MemoryRouter>
+    );
+
+    const bookmarkButton = screen.getByRole('button', { name: /in bookmarks/i });
+    fireEvent.click(bookmarkButton);
+
+    expect(mockDispatch).toHaveBeenCalledWith(expect.any(Function));
   });
 });

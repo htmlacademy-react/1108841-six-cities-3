@@ -4,6 +4,7 @@ import { Offer, City } from '../types/state';
 export type OffersState = {
   city: City;
   offers: Offer[];
+  favoriteOffers: Offer[];
   sort: string;
   activeOfferId: string | null;
   isOffersLoading: boolean;
@@ -11,6 +12,7 @@ export type OffersState = {
   currentOffer: Offer | null;
   nearbyOffers: Offer[];
   isFavoritesLoading: boolean;
+  isCurrentOfferLoading: boolean;
 };
 
 const initialState: OffersState = {
@@ -23,6 +25,7 @@ const initialState: OffersState = {
     }
   },
   offers: [],
+  favoriteOffers: [],
   sort: 'Popular',
   activeOfferId: null,
   isOffersLoading: false,
@@ -30,6 +33,7 @@ const initialState: OffersState = {
   currentOffer: null,
   nearbyOffers: [],
   isFavoritesLoading: false,
+  isCurrentOfferLoading: false,
 };
 
 const offersSlice = createSlice({
@@ -63,6 +67,9 @@ const offersSlice = createSlice({
     setFavoritesLoading(state, action: PayloadAction<boolean>) {
       state.isFavoritesLoading = action.payload;
     },
+    setCurrentOfferLoading(state, action: PayloadAction<boolean>) {
+      state.isCurrentOfferLoading = action.payload;
+    },
     setFavorite(state, action: PayloadAction<{ id: string; isFavorite: boolean }>) {
       const { id, isFavorite } = action.payload;
       const offer = state.offers.find((o) => o.id === id);
@@ -75,6 +82,18 @@ const offersSlice = createSlice({
       state.nearbyOffers = state.nearbyOffers.map((o) =>
         o.id === id ? { ...o, isFavorite } : o
       );
+
+      if (isFavorite) {
+        const favoriteOffer = state.offers.find((o) => o.id === id);
+        if (favoriteOffer && state.favoriteOffers && !state.favoriteOffers.find((fo) => fo.id === id)) {
+          state.favoriteOffers.push(favoriteOffer);
+        }
+      } else {
+        state.favoriteOffers = (state.favoriteOffers || []).filter((o) => o.id !== id);
+      }
+    },
+    setFavoriteOffers(state, action: PayloadAction<Offer[]>) {
+      state.favoriteOffers = action.payload;
     },
   },
 });
@@ -89,7 +108,9 @@ export const {
   setCurrentOffer,
   setNearbyOffers,
   setFavoritesLoading,
+  setCurrentOfferLoading,
   setFavorite,
+  setFavoriteOffers,
 } = offersSlice.actions;
 
 export default offersSlice.reducer;

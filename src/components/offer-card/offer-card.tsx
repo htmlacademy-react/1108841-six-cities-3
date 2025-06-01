@@ -17,12 +17,18 @@ function Card({ card, className = '' }: CardProps): JSX.Element {
   const navigate = useNavigate();
   const authorizationStatus = useSelector((state: RootState) => state.user.authorizationStatus);
 
+  const actualOffer = useSelector((state: RootState) =>
+    state.offers?.offers?.find((offer) => offer.id === card.id)
+  );
+
+  const isFavorite = actualOffer?.isFavorite ?? card.isFavorite;
+
   const handleFavoriteClick = () => {
     if (authorizationStatus !== AuthorizationStatus.Auth) {
       navigate(APP_ROUTE.LOGIN);
       return;
     }
-    dispatch(toggleFavorite(card.id, card.isFavorite));
+    dispatch(toggleFavorite(card.id, isFavorite));
   };
 
   return (
@@ -50,7 +56,7 @@ function Card({ card, className = '' }: CardProps): JSX.Element {
             <span className="place-card__price-text">&#47;&nbsp;night</span>
           </div>
           <button
-            className={`place-card__bookmark-button ${card.isFavorite ? 'place-card__bookmark-button--active' : ''} button`}
+            className={`place-card__bookmark-button ${isFavorite ? 'place-card__bookmark-button--active' : ''} button`}
             type="button"
             onClick={handleFavoriteClick}
           >

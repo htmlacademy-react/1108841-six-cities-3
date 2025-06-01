@@ -6,37 +6,48 @@ import { ReviewList } from '../../components/review';
 import { CardType } from '../../types/offer-type';
 import { Map } from '../../components/map';
 import { useAppDispatch, useAppSelector } from '../../store';
-import { fetchOfferById, fetchNearbyOffersById, fetchReviewsById } from '../../store/thunks';
+import { fetchOfferById, fetchNearbyOffersById, fetchReviewsById, toggleFavorite } from '../../store/thunks';
+import { setCurrentOffer } from '../../store/offers-slice';
 import { sortedReviewsSelector } from '../../store/selectors';
 import LoadingSpinner from '../../components/loading-spinner';
+import { AuthorizationStatus } from '../../types/state';
+import { APP_ROUTE } from '../../const';
 
 export default function OfferPage() {
   const { id } = useParams<{ id: string }>();
-  const navigate = useNavigate();
   const dispatch = useAppDispatch();
+  const navigate = useNavigate();
   const currentOffer = useAppSelector((state) => state.offers.currentOffer);
   const nearbyOffers = useAppSelector((state) => state.offers.nearbyOffers);
   const reviews = useAppSelector(sortedReviewsSelector);
-  const isOffersLoading = useAppSelector((state) => state.offers.isOffersLoading);
+  const isCurrentOfferLoading = useAppSelector((state) => state.offers.isCurrentOfferLoading);
   const isReviewsLoading = useAppSelector((state) => state.reviews.isReviewsLoading);
   const offersError = useAppSelector((state) => state.offers.offersError);
   const reviewsError = useAppSelector((state) => state.reviews.reviewsError);
+  const authorizationStatus = useAppSelector((state) => state.user.authorizationStatus);
 
   useEffect(() => {
     if (id) {
+      dispatch(setCurrentOffer(null));
       dispatch(fetchOfferById(id));
       dispatch(fetchNearbyOffersById(id));
       dispatch(fetchReviewsById(id));
     }
   }, [dispatch, id]);
 
-  useEffect(() => {
+  const handleFavoriteClick = () => {
     if (!currentOffer) {
-      navigate('/404');
+      return;
     }
-  }, [currentOffer, navigate]);
 
-  if (isOffersLoading || isReviewsLoading) {
+    if (authorizationStatus !== AuthorizationStatus.Auth) {
+      navigate(APP_ROUTE.LOGIN);
+      return;
+    }
+    dispatch(toggleFavorite(currentOffer.id, currentOffer.isFavorite));
+  };
+
+  if (isCurrentOfferLoading || isReviewsLoading) {
     return <LoadingSpinner message="Загружаем детали предложения..." />;
   }
 
@@ -55,7 +66,7 @@ export default function OfferPage() {
   }
 
   if (!currentOffer) {
-    return null;
+    return <LoadingSpinner message="Загружаем предложение..." />;
   }
 
   const mapOfferToCard = (offer: typeof currentOffer): CardType => ({
@@ -102,6 +113,7 @@ export default function OfferPage() {
                 <button
                   className={`offer__bookmark-button ${currentOffer.isFavorite ? 'offer__bookmark-button--active' : ''} button`}
                   type="button"
+                  onClick={handleFavoriteClick}
                 >
                   <svg className="offer__bookmark-icon" width="31" height="33">
                     <use xlinkHref="#icon-bookmark"></use>
@@ -121,10 +133,10 @@ export default function OfferPage() {
                   {currentOffer.type}
                 </li>
                 <li className="offer__feature offer__feature--bedrooms">
-                  {currentOffer.bedrooms} Bedrooms
+                  {currentOffer.bedrooms} {currentOffer.bedrooms === 1 ? 'Bedroom' : 'Bedrooms'}
                 </li>
                 <li className="offer__feature offer__feature--adults">
-                  Max {currentOffer.maxAdults} adults
+                  Max {currentOffer.maxAdults} {currentOffer.maxAdults === 1 ? 'adult' : 'adults'}
                 </li>
               </ul>
               <div className="offer__price">
