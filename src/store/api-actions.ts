@@ -91,3 +91,12 @@ export const toggleFavoriteThunk = createAsyncThunk<
     return updateFavoriteStatus(offerId, status);
   }
 });
+
+export const fetchFavoritesThunk = createAsyncThunk<
+  Offer[],
+  void,
+  ThunkConfig
+>('offers/fetchFavorites', async (_, { extra: api }) => {
+  const { data } = await api.get<Offer[]>('/favorite');
+  return data;
+});

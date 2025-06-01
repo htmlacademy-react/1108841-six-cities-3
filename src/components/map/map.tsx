@@ -13,7 +13,7 @@ type MapProps = {
 };
 
 const DEFAULT_ICON = L.icon({
-  iconUrl: 'https://unpkg.com/leaflet@1.7.1/dist/images/marker-icon.png',
+  iconUrl: '/img/pin.svg',
   iconSize: [27, 39],
   iconAnchor: [13, 39],
 });

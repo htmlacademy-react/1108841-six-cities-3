@@ -1,74 +1,18 @@
+import { useParams, Navigate, useNavigate } from 'react-router-dom';
 import { useEffect } from 'react';
-import { useParams, useNavigate } from 'react-router-dom';
-import Card from '../../components/offer-card/offer-card';
-import Header from '../../components/header';
-import { ReviewList } from '../../components/review';
-import { CardType } from '../../types/offer-type';
-import { Map } from '../../components/map';
-import { useAppDispatch, useAppSelector } from '../../store';
-import { fetchOfferById, fetchNearbyOffersById, fetchReviewsById, toggleFavorite, clearCurrentOffer } from '../../store/thunks';
-import { sortedReviewsSelector } from '../../store/selectors';
-import LoadingSpinner from '../../components/loading-spinner';
+import { useAppSelector, useAppDispatch } from '../../store';
+import { fetchOfferThunk, fetchNearbyOffersThunk, fetchReviewsThunk, toggleFavoriteThunk } from '../../store/api-actions';
 import { AuthorizationStatus } from '../../types/state';
 import { APP_ROUTE } from '../../const';
+import LoadingSpinner from '../../components/loading-spinner';
+import Header from '../../components/header';
+import Card from '../../components/offer-card';
+import ReviewList from '../../components/review/review-list';
+import { Map } from '../../components/map';
+import { getRating } from '../../utils/utils';
 
-export default function OfferPage() {
-  const { id } = useParams<{ id: string }>();
-  const dispatch = useAppDispatch();
-  const navigate = useNavigate();
-  const currentOffer = useAppSelector((state) => state.offers.currentOffer);
-  const nearbyOffers = useAppSelector((state) => state.offers.nearbyOffers);
-  const reviews = useAppSelector(sortedReviewsSelector);
-  const isCurrentOfferLoading = useAppSelector((state) => state.offers.isCurrentOfferLoading);
-  const isReviewsLoading = useAppSelector((state) => state.reviews.isReviewsLoading);
-  const offersError = useAppSelector((state) => state.offers.offersError);
-  const reviewsError = useAppSelector((state) => state.reviews.reviewsError);
-  const authorizationStatus = useAppSelector((state) => state.user.authorizationStatus);
-
-  useEffect(() => {
-    if (id) {
-      dispatch(clearCurrentOffer());
-      dispatch(fetchOfferById(id));
-      dispatch(fetchNearbyOffersById(id));
-      dispatch(fetchReviewsById(id));
-    }
-  }, [dispatch, id]);
-
-  const handleFavoriteClick = () => {
-    if (!currentOffer) {
-      return;
-    }
-
-    if (authorizationStatus !== AuthorizationStatus.Auth) {
-      navigate(APP_ROUTE.LOGIN);
-      return;
-    }
-    dispatch(toggleFavorite(currentOffer.id, currentOffer.isFavorite));
-  };
-
-  if (isCurrentOfferLoading || isReviewsLoading) {
-    return <LoadingSpinner message="Загружаем детали предложения..." />;
-  }
-
-  if (offersError || reviewsError) {
-    return (
-      <div className="page">
-        <Header />
-        <main className="page__main page__main--offer">
-          <div className="container" style={{ textAlign: 'center', padding: '100px 0' }}>
-            <h1>Ошибка</h1>
-            <p>{offersError || reviewsError}</p>
-          </div>
-        </main>
-      </div>
-    );
-  }
-
-  if (!currentOffer) {
-    return <LoadingSpinner message="Загружаем предложение..." />;
-  }
-
-  const mapOfferToCard = (offer: typeof currentOffer): CardType => ({
+function mapOfferToCard(offer: any) {
+  return {
     id: offer.id,
     img: offer.previewImage,
     rating: offer.rating,
@@ -78,7 +22,64 @@ export default function OfferPage() {
     type: offer.type,
     isFavorite: offer.isFavorite,
     location: offer.location
-  });
+  };
+}
+
+function OfferPage(): JSX.Element {
+  const { id } = useParams<{ id: string }>();
+  const dispatch = useAppDispatch();
+  const navigate = useNavigate();
+
+  const currentOffer = useAppSelector((state) => state.offers.currentOffer);
+  const nearbyOffers = useAppSelector((state) => state.offers.nearbyOffers);
+  const reviews = useAppSelector((state) => state.reviews.reviews);
+  const isCurrentOfferLoading = useAppSelector((state) => state.offers.isCurrentOfferLoading);
+  const offersError = useAppSelector((state) => state.offers.offersError);
+  const authorizationStatus = useAppSelector((state) => state.user.authorizationStatus);
+
+  const isAuth = authorizationStatus === AuthorizationStatus.Auth;
+
+  useEffect(() => {
+    if (id) {
+      dispatch(fetchOfferThunk(id));
+      dispatch(fetchNearbyOffersThunk(id));
+      dispatch(fetchReviewsThunk(id));
+    }
+  }, [dispatch, id]);
+
+  const handleFavoriteClick = () => {
+    if (!isAuth) {
+      navigate(APP_ROUTE.LOGIN);
+      return;
+    }
+    if (currentOffer) {
+      dispatch(toggleFavoriteThunk({
+        offerId: currentOffer.id,
+        status: currentOffer.isFavorite ? 0 : 1
+      }));
+    }
+  };
+
+  if (!id) {
+    return <Navigate to={APP_ROUTE.NOT_FOUND} />;
+  }
+
+  if (offersError && !isCurrentOfferLoading) {
+    return <Navigate to="*" />;
+  }
+
+  if (isCurrentOfferLoading || !currentOffer) {
+    return (
+      <div className="page">
+        <main className="page__main page__main--offer">
+          <div>Loading offer...</div>
+        </main>
+      </div>
+    );
+  }
+
+  const nearbyOffersLimited = nearbyOffers.slice(0, 3);
+  const mapOffers = [currentOffer, ...nearbyOffersLimited];
 
   return (
     <div className="page">
@@ -87,13 +88,9 @@ export default function OfferPage() {
         <section className="offer">
           <div className="offer__gallery-container container">
             <div className="offer__gallery">
-              {currentOffer.images.slice(0, 6).map((image) => (
-                <div className="offer__image-wrapper" key={`image-${image}`}>
-                  <img
-                    className="offer__image"
-                    src={image}
-                    alt="Property photo"
-                  />
+              {currentOffer.images?.slice(0, 6).map((image, index) => (
+                <div key={index} className="offer__image-wrapper">
+                  <img className="offer__image" src={image} alt="Photo studio" />
                 </div>
               ))}
             </div>
@@ -110,7 +107,7 @@ export default function OfferPage() {
                   {currentOffer.title}
                 </h1>
                 <button
-                  className={`offer__bookmark-button ${currentOffer.isFavorite ? 'offer__bookmark-button--active' : ''} button`}
+                  className={`offer__bookmark-button button ${currentOffer.isFavorite ? 'offer__bookmark-button--active' : ''}`}
                   type="button"
                   onClick={handleFavoriteClick}
                 >
@@ -122,7 +119,7 @@ export default function OfferPage() {
               </div>
               <div className="offer__rating rating">
                 <div className="offer__stars rating__stars">
-                  <span style={{ width: `${Math.round(currentOffer.rating) * 20}%` }}></span>
+                  <span style={{ width: getRating(currentOffer.rating) }}></span>
                   <span className="visually-hidden">Rating</span>
                 </div>
                 <span className="offer__rating-value rating__value">{currentOffer.rating}</span>
@@ -132,10 +129,10 @@ export default function OfferPage() {
                   {currentOffer.type}
                 </li>
                 <li className="offer__feature offer__feature--bedrooms">
-                  {currentOffer.bedrooms} {currentOffer.bedrooms === 1 ? 'Bedroom' : 'Bedrooms'}
+                  {currentOffer.bedrooms} Bedrooms
                 </li>
                 <li className="offer__feature offer__feature--adults">
-                  Max {currentOffer.maxAdults} {currentOffer.maxAdults === 1 ? 'adult' : 'adults'}
+                  Max {currentOffer.maxAdults} adults
                 </li>
               </ul>
               <div className="offer__price">
@@ -145,8 +142,8 @@ export default function OfferPage() {
               <div className="offer__inside">
                 <h2 className="offer__inside-title">What&apos;s inside</h2>
                 <ul className="offer__inside-list">
-                  {currentOffer.goods.map((good) => (
-                    <li className="offer__inside-item" key={good}>
+                  {currentOffer.goods?.map((good) => (
+                    <li key={good} className="offer__inside-item">
                       {good}
                     </li>
                   ))}
@@ -155,17 +152,13 @@ export default function OfferPage() {
               <div className="offer__host">
                 <h2 className="offer__host-title">Meet the host</h2>
                 <div className="offer__host-user user">
-                  <div className={`offer__avatar-wrapper ${currentOffer.host.isPro ? 'offer__avatar-wrapper--pro' : ''} user__avatar-wrapper`}>
-                    <img
-                      className="offer__avatar user__avatar"
-                      src={currentOffer.host.avatarUrl}
-                      width="74"
-                      height="74"
-                      alt="Host avatar"
-                    />
+                  <div className={`offer__avatar-wrapper user__avatar-wrapper ${currentOffer.host?.isPro ? 'offer__avatar-wrapper--pro' : ''}`}>
+                    <img className="offer__avatar user__avatar" src={currentOffer.host?.avatarUrl} width="74" height="74" alt="Host avatar" />
                   </div>
-                  <span className="offer__user-name">{currentOffer.host.name}</span>
-                  {currentOffer.host.isPro && (
+                  <span className="offer__user-name">
+                    {currentOffer.host?.name}
+                  </span>
+                  {currentOffer.host?.isPro && (
                     <span className="offer__user-status">Pro</span>
                   )}
                 </div>
@@ -180,22 +173,25 @@ export default function OfferPage() {
           </div>
           <section className="offer__map map">
             <Map
-              offers={[currentOffer, ...nearbyOffers]}
+              offers={mapOffers}
+              activeOfferId={currentOffer.id}
               lat={currentOffer.city.location.latitude}
               lng={currentOffer.city.location.longitude}
               zoom={currentOffer.city.location.zoom}
-              activeOfferId={currentOffer.id}
+              className="offer__map"
             />
           </section>
         </section>
         <div className="container">
           <section className="near-places places">
-            <h2 className="near-places__title">
-              Other places in the neighbourhood
-            </h2>
+            <h2 className="near-places__title">Other places in the neighborhood</h2>
             <div className="near-places__list places__list">
-              {nearbyOffers.map((offer) => (
-                <Card key={offer.id} card={mapOfferToCard(offer)} />
+              {nearbyOffersLimited.map((offer) => (
+                <Card
+                  key={offer.id}
+                  card={mapOfferToCard(offer)}
+                  isNearCard
+                />
               ))}
             </div>
           </section>
@@ -204,3 +200,5 @@ export default function OfferPage() {
     </div>
   );
 }
+
+export default OfferPage;

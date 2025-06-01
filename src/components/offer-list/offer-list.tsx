@@ -1,4 +1,4 @@
-import Card from '../offer-card/offer-card';
+import Card from '../offer-card';
 import { Offer } from '../../types/state';
 import { CardType } from '../../types/offer-type';
 import { useAppDispatch } from '../../store';
@@ -37,13 +37,12 @@ function CardListMain({ offers }: OfferListProps) {
   return (
     <div className="cities__places-list places__list tabs__content">
       {offers.map((offer) => (
-        <div
+        <Card
           key={offer.id}
+          card={mapOffersToCardType(offer)}
           onMouseEnter={() => handleCardHover(offer.id)}
           onMouseLeave={handleCardLeave}
-        >
-          <Card card={mapOffersToCardType(offer)} />
-        </div>
+        />
       ))}
     </div>
   );

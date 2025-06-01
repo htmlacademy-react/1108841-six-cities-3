@@ -1,4 +1,5 @@
 export const getRating = (starsCount: number) => {
-  const percents = starsCount * 20;
+  const clampedStars = Math.min(Math.max(starsCount, 0), 5);
+  const percents = Math.round(clampedStars) * 20;
   return `${percents}%`;
 };

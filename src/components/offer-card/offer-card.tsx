@@ -10,9 +10,12 @@ import { APP_ROUTE } from '../../const';
 type CardProps = {
   card: CardType;
   className?: string;
+  onMouseEnter?: () => void;
+  onMouseLeave?: () => void;
+  isNearCard?: boolean;
 };
 
-function Card({ card, className = '' }: CardProps): JSX.Element {
+function Card({ card, className = '', onMouseEnter, onMouseLeave, isNearCard = false }: CardProps): JSX.Element {
   const dispatch = useAppDispatch();
   const navigate = useNavigate();
   const authorizationStatus = useSelector((state: RootState) => state.user.authorizationStatus);
@@ -32,7 +35,11 @@ function Card({ card, className = '' }: CardProps): JSX.Element {
   };
 
   return (
-    <article className={`cities__card place-card ${className}`.trim()}>
+    <article
+      className={`${isNearCard ? 'near-places__card' : 'cities__card'} place-card ${className}`.trim()}
+      onMouseEnter={onMouseEnter}
+      onMouseLeave={onMouseLeave}
+    >
       {card.isPremium && (
         <div className="place-card__mark">
           <span>Premium</span>
@@ -63,7 +70,7 @@ function Card({ card, className = '' }: CardProps): JSX.Element {
             <svg className="place-card__bookmark-icon" width="18" height="19">
               <use xlinkHref="#icon-bookmark"></use>
             </svg>
-            <span className="visually-hidden">Rating</span>
+            <span className="visually-hidden">To bookmarks</span>
           </button>
         </div>
         <div className="place-card__rating rating">

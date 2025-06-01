@@ -1,3 +1,3 @@
-import OfferList from './offer-list';
+import Card from './offer-card';
 
-export default OfferList;
+export default Card;

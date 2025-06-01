@@ -8,9 +8,9 @@ type ReviewListProps = {
 };
 
 function ReviewList({ reviews, offerId }: ReviewListProps): JSX.Element {
-  const sortedReviews = [...reviews].sort((a, b) =>
-    new Date(b.date).getTime() - new Date(a.date).getTime()
-  );
+  const sortedReviews = [...reviews]
+    .sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime())
+    .slice(0, 10);
 
   return (
     <section className="offer__reviews reviews">

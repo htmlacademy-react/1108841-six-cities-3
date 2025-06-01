@@ -1,6 +1,5 @@
 import { ThunkActionResult } from './action';
 import { setFavoritesLoading, setFavoriteOffers, setSort, setActiveOffer, setCurrentOffer } from './offers-slice';
-import { getFavorites } from '../services/api';
 import {
   fetchOffersThunk,
   fetchOfferThunk,
@@ -10,21 +9,22 @@ import {
   loginThunk,
   checkAuthThunk,
   logoutThunk,
-  toggleFavoriteThunk
+  toggleFavoriteThunk,
+  fetchFavoritesThunk
 } from './api-actions';
 
-export const fetchOffers = () => fetchOffersThunk();
+export const fetchOffers = fetchOffersThunk;
 
-export const fetchOfferById = (id: string) => fetchOfferThunk(id);
+export const fetchOfferById = fetchOfferThunk;
 
-export const fetchNearbyOffersById = (id: string) => fetchNearbyOffersThunk(id);
+export const fetchNearbyOffersById = fetchNearbyOffersThunk;
 
-export const fetchReviewsById = (id: string) => fetchReviewsThunk(id);
+export const fetchReviewsById = fetchReviewsThunk;
 
 export const submitReview = (id: string, review: { rating: number; comment: string }) =>
   postReviewThunk({ id, rating: review.rating, comment: review.comment });
 
-export const checkAuth = () => checkAuthThunk();
+export const checkAuth = checkAuthThunk;
 
 export const login = (email: string, password: string) => {
   const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
@@ -46,20 +46,9 @@ export const login = (email: string, password: string) => {
   return loginThunk({ email, password });
 };
 
-export const logout = () => logoutThunk();
+export const logout = logoutThunk;
 
-export const fetchFavorites = (): ThunkActionResult =>
-  async (dispatch) => {
-    dispatch(setFavoritesLoading(true));
-    try {
-      const favorites = await getFavorites();
-      dispatch(setFavoriteOffers(favorites));
-    } catch {
-      // Ошибка загрузки избранного обрабатывается молча
-    } finally {
-      dispatch(setFavoritesLoading(false));
-    }
-  };
+export const fetchFavorites = fetchFavoritesThunk;
 
 export const toggleFavorite = (offerId: string, isFavorite: boolean) =>
   toggleFavoriteThunk({ offerId, status: isFavorite ? 0 : 1 });

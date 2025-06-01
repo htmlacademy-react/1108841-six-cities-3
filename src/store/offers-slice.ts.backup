@@ -4,8 +4,7 @@ import {
   fetchOffersThunk,
   fetchOfferThunk,
   fetchNearbyOffersThunk,
-  toggleFavoriteThunk,
-  fetchFavoritesThunk
+  toggleFavoriteThunk
 } from './api-actions';
 import { addToFavorites, removeFromFavorites, getFavoritesFromStorage } from '../services/token';
 
@@ -174,16 +173,6 @@ const offersSlice = createSlice({
           removeFromFavorites(id);
           state.favoriteOffers = (state.favoriteOffers || []).filter((o) => o.id !== id);
         }
-      })
-      .addCase(fetchFavoritesThunk.pending, (state) => {
-        state.isFavoritesLoading = true;
-      })
-      .addCase(fetchFavoritesThunk.fulfilled, (state, action) => {
-        state.isFavoritesLoading = false;
-        state.favoriteOffers = action.payload;
-      })
-      .addCase(fetchFavoritesThunk.rejected, (state) => {
-        state.isFavoritesLoading = false;
       });
   },
 });
