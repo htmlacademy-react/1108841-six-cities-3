@@ -1,4 +1,4 @@
-import { Link, useNavigate } from 'react-router-dom';
+import { Link, useNavigate, Navigate } from 'react-router-dom';
 import Footer from '../../components/footer';
 import Header from '../../components/header';
 import { Offer, AuthorizationStatus } from '../../types/state';
@@ -18,14 +18,25 @@ function FavoritePage() {
   const favoriteOffers = useAppSelector((state) => state.offers.favoriteOffers) || [];
 
   useEffect(() => {
-    if (authorizationStatus === AuthorizationStatus.NoAuth) {
-      navigate(APP_ROUTE.LOGIN);
-      return;
-    }
     if (authorizationStatus === AuthorizationStatus.Auth) {
       dispatch(fetchFavorites());
     }
-  }, [authorizationStatus, dispatch, navigate]);
+  }, [authorizationStatus, dispatch]);
+
+  if (authorizationStatus === AuthorizationStatus.NoAuth) {
+    return <Navigate to={APP_ROUTE.LOGIN} replace />;
+  }
+
+  if (authorizationStatus === AuthorizationStatus.Unknown) {
+    return (
+      <div className="page">
+        <main className="page__main page__main--favorites">
+          <LoadingSpinner />
+        </main>
+        <Footer />
+      </div>
+    );
+  }
 
   const handleFavoriteClick = (offerId: string, isFavorite: boolean) => {
     if (authorizationStatus !== AuthorizationStatus.Auth) {

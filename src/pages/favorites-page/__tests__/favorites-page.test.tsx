@@ -116,7 +116,7 @@ describe('FavoritePage', () => {
       </MemoryRouter>
     );
 
-    expect(screen.getByText('Загружаем избранное...')).toBeInTheDocument();
+    expect(screen.getByText('Загрузка...')).toBeInTheDocument();
   });
 
   it('should show empty state when no favorites available', () => {

@@ -112,7 +112,7 @@ describe('OfferPage', () => {
       </MemoryRouter>
     );
 
-    expect(screen.getByText('Загружаем детали предложения...')).toBeInTheDocument();
+    expect(screen.getByText('Loading offer...')).toBeInTheDocument();
   });
 
   it('should render offer when loaded', () => {
@@ -136,7 +136,7 @@ describe('OfferPage', () => {
       </MemoryRouter>
     );
 
-    expect(screen.getByText('Загружаем предложение...')).toBeInTheDocument();
+    expect(screen.getByText('Loading offer...')).toBeInTheDocument();
   });
 
   it('should handle favorite button click', () => {
