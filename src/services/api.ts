@@ -59,8 +59,18 @@ export const getFavorites = async (): Promise<Offer[]> => {
   return favoriteOffers.map((offer) => ({ ...offer, isFavorite: true }));
 };
 
-export const updateFavoriteStatus = async (offerId: string, status: 0 | 1): Promise<Offer> =>
-  Promise.resolve({
+export const updateFavoriteStatus = async (offerId: string, status: 0 | 1): Promise<Offer> => {
+  const allOffers = await fetchOffers();
+  const offer = allOffers.find((o) => o.id === offerId);
+
+  if (offer) {
+    return {
+      ...offer,
+      isFavorite: status === 1
+    };
+  }
+
+  return Promise.resolve({
     id: offerId,
     title: 'Mock Offer',
     type: 'apartment',
@@ -85,3 +95,4 @@ export const updateFavoriteStatus = async (offerId: string, status: 0 | 1): Prom
     description: 'Mock description',
     images: ['img/apartment-01.jpg']
   } as Offer);
+};

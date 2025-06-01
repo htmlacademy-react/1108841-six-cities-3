@@ -6,6 +6,7 @@ import {
   fetchNearbyOffersThunk,
   toggleFavoriteThunk
 } from './api-actions';
+import { addToFavorites, removeFromFavorites, getFavoritesFromStorage } from '../services/token';
 
 export type OffersState = {
   city: City;
@@ -90,11 +91,13 @@ const offersSlice = createSlice({
       );
 
       if (isFavorite) {
+        addToFavorites(id);
         const favoriteOffer = state.offers.find((o) => o.id === id);
         if (favoriteOffer && state.favoriteOffers && !state.favoriteOffers.find((fo) => fo.id === id)) {
           state.favoriteOffers.push(favoriteOffer);
         }
       } else {
+        removeFromFavorites(id);
         state.favoriteOffers = (state.favoriteOffers || []).filter((o) => o.id !== id);
       }
     },
@@ -110,7 +113,11 @@ const offersSlice = createSlice({
       })
       .addCase(fetchOffersThunk.fulfilled, (state, action) => {
         state.isOffersLoading = false;
-        state.offers = action.payload;
+        const favoriteIds = getFavoritesFromStorage();
+        state.offers = action.payload.map((offer) => ({
+          ...offer,
+          isFavorite: favoriteIds.includes(offer.id)
+        }));
         state.offersError = null;
       })
       .addCase(fetchOffersThunk.rejected, (state, action) => {
@@ -123,7 +130,11 @@ const offersSlice = createSlice({
       })
       .addCase(fetchOfferThunk.fulfilled, (state, action) => {
         state.isCurrentOfferLoading = false;
-        state.currentOffer = action.payload;
+        const favoriteIds = getFavoritesFromStorage();
+        state.currentOffer = {
+          ...action.payload,
+          isFavorite: favoriteIds.includes(action.payload.id)
+        };
         state.offersError = null;
       })
       .addCase(fetchOfferThunk.rejected, (state, action) => {
@@ -131,7 +142,11 @@ const offersSlice = createSlice({
         state.offersError = action.error.message || 'Ошибка загрузки предложения';
       })
       .addCase(fetchNearbyOffersThunk.fulfilled, (state, action) => {
-        state.nearbyOffers = action.payload;
+        const favoriteIds = getFavoritesFromStorage();
+        state.nearbyOffers = action.payload.map((offer) => ({
+          ...offer,
+          isFavorite: favoriteIds.includes(offer.id)
+        }));
       })
       .addCase(toggleFavoriteThunk.fulfilled, (state, action) => {
         const updatedOffer = action.payload;
@@ -149,11 +164,13 @@ const offersSlice = createSlice({
         );
 
         if (isFavorite) {
+          addToFavorites(id);
           const favoriteOffer = state.offers.find((o) => o.id === id);
           if (favoriteOffer && state.favoriteOffers && !state.favoriteOffers.find((fo) => fo.id === id)) {
             state.favoriteOffers.push(favoriteOffer);
           }
         } else {
+          removeFromFavorites(id);
           state.favoriteOffers = (state.favoriteOffers || []).filter((o) => o.id !== id);
         }
       });

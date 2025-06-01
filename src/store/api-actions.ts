@@ -2,6 +2,7 @@ import { createAsyncThunk } from '@reduxjs/toolkit';
 import { AxiosInstance } from 'axios';
 import { Offer } from '../types/state';
 import { Review } from '../types/review-type';
+import { updateFavoriteStatus } from '../services/api';
 
 type ThunkConfig = {
   extra: AxiosInstance;
@@ -83,6 +84,10 @@ export const toggleFavoriteThunk = createAsyncThunk<
   { offerId: string; status: 0 | 1 },
   ThunkConfig
 >('offers/toggleFavorite', async ({ offerId, status }, { extra: api }) => {
-  const { data } = await api.post<Offer>(`/favorite/${offerId}/${status}`);
-  return data;
+  try {
+    const { data } = await api.post<Offer>(`/favorite/${offerId}/${status}`);
+    return data;
+  } catch {
+    return updateFavoriteStatus(offerId, status);
+  }
 });
