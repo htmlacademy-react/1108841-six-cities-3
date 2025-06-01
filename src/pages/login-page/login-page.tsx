@@ -1,7 +1,7 @@
 import { FormEvent, useState, useEffect } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import { useDispatch } from 'react-redux';
-import { login } from '../../store/thunks';
+import { loginThunk } from '../../store/api-actions';
 import { APP_ROUTE, CITIES, CITY_LOCATIONS, CityType } from '../../const';
 import { AppDispatch } from '../../store';
 import { useAppSelector } from '../../store';
@@ -17,6 +17,7 @@ function LoginPage(): JSX.Element {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
+  const [isSubmitting, setIsSubmitting] = useState(false);
   const [randomCity] = useState<CityType>(() => CITIES[Math.floor(Math.random() * CITIES.length)]);
 
   useEffect(() => {
@@ -34,14 +35,41 @@ function LoginPage(): JSX.Element {
   const handleSubmit = (evt: FormEvent<HTMLFormElement>) => {
     evt.preventDefault();
     setError('');
-    dispatch(login(email, password))
-      .then(() => {
-        navigate(MAIN_ROUTE);
-      })
-      .catch((err: Error) => {
-        setError(err.message || 'Ошибка авторизации');
-      });
+
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!emailRegex.test(email)) {
+      setError('Некорректный email');
+      return;
+    }
+
+    const hasLetter = /[a-zA-Z]/.test(password);
+    const hasNumber = /\d/.test(password);
+
+    if (!password || password.length < 1) {
+      setError('Пароль обязателен');
+      return;
+    }
+
+    if (!hasLetter || !hasNumber) {
+      setError('Пароль должен содержать минимум одну букву и одну цифру');
+      return;
+    }
+
+    setIsSubmitting(true);
+    dispatch(loginThunk({ email, password }));
   };
+
+  useEffect(() => {
+    if (isSubmitting) {
+      if (authorizationStatus === AuthorizationStatus.Auth) {
+        setIsSubmitting(false);
+        navigate(MAIN_ROUTE);
+      } else if (authorizationStatus === AuthorizationStatus.NoAuth) {
+        setIsSubmitting(false);
+        setError('Ошибка авторизации');
+      }
+    }
+  }, [authorizationStatus, isSubmitting, navigate]);
 
   return (
     <div className="page page--gray page--login">
@@ -91,7 +119,7 @@ function LoginPage(): JSX.Element {
                   onChange={(evt) => setPassword(evt.target.value)}
                 />
               </div>
-              <button className="login__submit form__submit button" type="submit">
+              <button className="login__submit form__submit button" type="submit" disabled={isSubmitting}>
                 Sign in
               </button>
             </form>

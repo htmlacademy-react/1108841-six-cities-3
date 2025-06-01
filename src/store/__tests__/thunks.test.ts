@@ -1,9 +1,9 @@
-import * as api from '../../api';
+import * as api from '../../services/api';
 import { Offer } from '../../types/state';
 import { Review } from '../../types/review-type';
 import { vi } from 'vitest';
 
-vi.mock('../../api');
+vi.mock('../../services/api');
 
 const mockedApi = vi.mocked(api);
 

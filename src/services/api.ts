@@ -1,12 +1,12 @@
 import axios, { AxiosInstance } from 'axios';
-import { Offer } from './types/state';
-import { Review } from './types/review-type';
 import { getToken, getFavoritesFromStorage } from './token';
+import { Offer } from '../types/state';
+import { Review } from '../types/review-type';
 
 const BACKEND_URL = 'https://15.design.htmlacademy.pro/six-cities';
 const TIMEOUT = 5000;
 
-function createAPI(): AxiosInstance {
+export function createAPI(): AxiosInstance {
   const api = axios.create({
     baseURL: BACKEND_URL,
     timeout: TIMEOUT,
