@@ -1,5 +1,5 @@
 import { ThunkActionResult } from './action';
-import { setFavoritesLoading, setFavoriteOffers, setSort, setActiveOffer, setCurrentOffer } from './offers-slice';
+import { setSort, setActiveOffer, setCurrentOffer } from './offers-slice';
 import {
   fetchOffersThunk,
   fetchOfferThunk,

@@ -1,19 +1,13 @@
 import React, { useEffect } from 'react';
-import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
-import { useAppDispatch, useAppSelector } from '../../store';
+import { BrowserRouter, Routes, Route } from 'react-router-dom';
+import { useAppDispatch } from '../../store';
 import { fetchOffersThunk, checkAuthThunk } from '../../store/api-actions';
-import { AuthorizationStatus } from '../../types/state';
 import { APP_ROUTE } from '../../const';
 import MainPage from '../../pages/main-page/main-page';
 import LoginPage from '../../pages/login-page/login-page';
 import FavoritesPage from '../../pages/favorites-page/favorites-page';
 import OfferPage from '../../pages/offer-page/offer-page';
 import NotFoundPage from '../../pages/404-page/404-page';
-
-function RequireAuth({ children }: { children: JSX.Element }) {
-  const authorizationStatus = useAppSelector((state) => state.user.authorizationStatus);
-  return authorizationStatus === AuthorizationStatus.Auth ? children : React.createElement(Navigate, { to: APP_ROUTE.LOGIN });
-}
 
 function App() {
   const dispatch = useAppDispatch();

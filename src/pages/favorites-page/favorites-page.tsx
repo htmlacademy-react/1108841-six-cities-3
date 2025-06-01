@@ -1,7 +1,6 @@
 import { Link, useNavigate } from 'react-router-dom';
 import Footer from '../../components/footer';
 import Header from '../../components/header';
-import { useSelector } from 'react-redux';
 import { Offer, AuthorizationStatus } from '../../types/state';
 import { useEffect } from 'react';
 import { useAppDispatch, useAppSelector } from '../../store';

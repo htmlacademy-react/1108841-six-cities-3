@@ -88,7 +88,8 @@ export const toggleFavoriteThunk = createAsyncThunk<
     const { data } = await api.post<Offer>(`/favorite/${offerId}/${status}`);
     return data;
   } catch {
-    return updateFavoriteStatus(offerId, status);
+    const { data } = await updateFavoriteStatus(offerId, status);
+    return data;
   }
 });
 

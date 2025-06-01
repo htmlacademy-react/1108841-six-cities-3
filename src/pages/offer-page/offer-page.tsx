@@ -2,16 +2,15 @@ import { useParams, Navigate, useNavigate } from 'react-router-dom';
 import { useEffect } from 'react';
 import { useAppSelector, useAppDispatch } from '../../store';
 import { fetchOfferThunk, fetchNearbyOffersThunk, fetchReviewsThunk, toggleFavoriteThunk } from '../../store/api-actions';
-import { AuthorizationStatus } from '../../types/state';
+import { AuthorizationStatus, Offer } from '../../types/state';
 import { APP_ROUTE } from '../../const';
-import LoadingSpinner from '../../components/loading-spinner';
 import Header from '../../components/header';
 import Card from '../../components/offer-card';
 import ReviewList from '../../components/review/review-list';
 import { Map } from '../../components/map';
 import { getRating } from '../../utils/utils';
 
-function mapOfferToCard(offer: any) {
+function mapOfferToCard(offer: Offer) {
   return {
     id: offer.id,
     img: offer.previewImage,
@@ -88,8 +87,8 @@ function OfferPage(): JSX.Element {
         <section className="offer">
           <div className="offer__gallery-container container">
             <div className="offer__gallery">
-              {currentOffer.images?.slice(0, 6).map((image, index) => (
-                <div key={index} className="offer__image-wrapper">
+              {currentOffer.images?.slice(0, 6).map((image) => (
+                <div key={image} className="offer__image-wrapper">
                   <img className="offer__image" src={image} alt="Photo studio" />
                 </div>
               ))}
