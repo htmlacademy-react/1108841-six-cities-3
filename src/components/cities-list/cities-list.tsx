@@ -2,7 +2,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { RootState } from '../../store';
 import { changeCity } from '../../store/offers-slice';
 import { City } from '../../types/state';
-import { City as CityConst } from '../../const';
+import { City as CityConst, APP_ROUTE } from '../../const';
 
 const CITIES: City[] = [
   {
@@ -78,7 +78,7 @@ function CitiesList({ className = '' }: CitiesListProps): JSX.Element {
                 className={`locations__item-link tabs__item ${
                   city.name === currentCity.name ? 'tabs__item--active' : ''
                 }`}
-                href="#"
+                href={APP_ROUTE.ANCHOR}
                 onClick={(evt) => handleCityClick(evt, city)}
               >
                 <span>{city.name}</span>

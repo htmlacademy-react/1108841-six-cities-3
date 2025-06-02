@@ -2,6 +2,7 @@ import { useEffect, useRef } from 'react';
 import L from 'leaflet';
 import 'leaflet/dist/leaflet.css';
 import { Offer } from '../../types/state';
+import { MAP_ICONS } from '../../const';
 
 type MapProps = {
   offers: Offer[];
@@ -13,13 +14,13 @@ type MapProps = {
 };
 
 const DEFAULT_ICON = L.icon({
-  iconUrl: '/img/pin.svg',
+  iconUrl: MAP_ICONS.DEFAULT,
   iconSize: [27, 39],
   iconAnchor: [13, 39],
 });
 
 const ACTIVE_ICON = L.icon({
-  iconUrl: '/img/pin-active.svg',
+  iconUrl: MAP_ICONS.ACTIVE,
   iconSize: [27, 39],
   iconAnchor: [13, 39],
 });
