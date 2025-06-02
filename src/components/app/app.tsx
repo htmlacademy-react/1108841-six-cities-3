@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import { useEffect } from 'react';
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
 import { useAppDispatch } from '../../store';
 import { fetchOffersThunk, checkAuthThunk } from '../../store/api-actions';
@@ -15,14 +15,17 @@ function App() {
     dispatch(checkAuthThunk());
     dispatch(fetchOffersThunk());
   }, [dispatch]);
-  return React.createElement(BrowserRouter, {},
-    React.createElement(Routes, {},
-      React.createElement(Route, { path: APP_ROUTE.MAIN, element: React.createElement(MainPage) }),
-      React.createElement(Route, { path: APP_ROUTE.LOGIN, element: React.createElement(LoginPage) }),
-      React.createElement(Route, { path: APP_ROUTE.FAVORITES, element: React.createElement(FavoritesPage) }),
-      React.createElement(Route, { path: APP_ROUTE.OFFER, element: React.createElement(OfferPage) }),
-      React.createElement(Route, { path: '*', element: React.createElement(NotFoundPage) })
-    )
+
+  return (
+    <BrowserRouter>
+      <Routes>
+        <Route path={APP_ROUTE.MAIN} element={<MainPage />} />
+        <Route path={APP_ROUTE.LOGIN} element={<LoginPage />} />
+        <Route path={APP_ROUTE.FAVORITES} element={<FavoritesPage />} />
+        <Route path={APP_ROUTE.OFFER} element={<OfferPage />} />
+        <Route path="*" element={<NotFoundPage />} />
+      </Routes>
+    </BrowserRouter>
   );
 }
 export default App;
