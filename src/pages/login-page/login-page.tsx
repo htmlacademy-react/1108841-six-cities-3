@@ -8,7 +8,6 @@ import { useAppSelector } from '../../store';
 import { AuthorizationStatus } from '../../types/state';
 import { changeCity } from '../../store/offers-slice';
 
-const MAIN_ROUTE = APP_ROUTE.MAIN as string;
 
 function LoginPage(): JSX.Element {
   const dispatch: AppDispatch = useDispatch();
@@ -22,14 +21,14 @@ function LoginPage(): JSX.Element {
 
   useEffect(() => {
     if (authorizationStatus === AuthorizationStatus.Auth) {
-      navigate(MAIN_ROUTE);
+      navigate(APP_ROUTE.MAIN);
     }
   }, [authorizationStatus, navigate]);
 
   const handleCityClick = () => {
     const cityData = CITY_LOCATIONS[randomCity];
     dispatch(changeCity(cityData));
-    navigate(MAIN_ROUTE);
+    navigate(APP_ROUTE.MAIN);
   };
 
   const handleSubmit = async (evt: FormEvent<HTMLFormElement>) => {
@@ -59,7 +58,7 @@ function LoginPage(): JSX.Element {
 
     try {
       await dispatch(loginThunk({ email, password })).unwrap();
-      navigate(MAIN_ROUTE);
+      navigate(APP_ROUTE.MAIN);
     } catch (loginError) {
       setError('Ошибка авторизации');
     } finally {
@@ -69,7 +68,7 @@ function LoginPage(): JSX.Element {
 
   useEffect(() => {
     if (authorizationStatus === AuthorizationStatus.Auth) {
-      navigate(MAIN_ROUTE);
+      navigate(APP_ROUTE.MAIN);
     }
   }, [authorizationStatus, navigate]);
 
@@ -79,7 +78,7 @@ function LoginPage(): JSX.Element {
         <div className="container">
           <div className="header__wrapper">
             <div className="header__left">
-              <Link className="header__logo-link" to={MAIN_ROUTE}>
+              <Link className="header__logo-link" to={APP_ROUTE.MAIN}>
                 <img className="header__logo" src="img/logo.svg" alt="6 cities logo" width="81" height="41" />
               </Link>
             </div>

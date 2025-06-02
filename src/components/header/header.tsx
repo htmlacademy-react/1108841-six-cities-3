@@ -82,7 +82,7 @@ function Header(): JSX.Element {
                   <li className="header__nav-item">
                     <Link
                       className="header__nav-link"
-                      to="#"
+                      to={APP_ROUTE.ANCHOR}
                       onClick={(evt) => {
                         evt.preventDefault();
                         handleSignOut();

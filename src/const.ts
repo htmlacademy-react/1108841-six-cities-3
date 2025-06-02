@@ -4,6 +4,7 @@ export const APP_ROUTE = {
   OFFER: '/offer/:id',
   LOGIN: '/login',
   NOT_FOUND: '*',
+  ANCHOR: '#',
 } as const;
 
 export const City = {
@@ -79,3 +80,8 @@ export const SORT_TYPES = Object.values(SortType);
 export type AppRouteType = typeof APP_ROUTE[keyof typeof APP_ROUTE];
 export type CityType = typeof City[keyof typeof City];
 export type SortTypeType = typeof SortType[keyof typeof SortType];
+
+export const MAP_ICONS = {
+  DEFAULT: '/img/pin.svg',
+  ACTIVE: '/img/pin-active.svg',
+} as const;

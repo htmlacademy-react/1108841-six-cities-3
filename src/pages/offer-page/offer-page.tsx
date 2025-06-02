@@ -64,7 +64,7 @@ function OfferPage(): JSX.Element {
   }
 
   if (offersError && !isCurrentOfferLoading) {
-    return <Navigate to="*" />;
+    return <Navigate to={APP_ROUTE.NOT_FOUND} />;
   }
 
   if (isCurrentOfferLoading || !currentOffer) {
