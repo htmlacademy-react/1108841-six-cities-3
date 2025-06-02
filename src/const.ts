@@ -4,6 +4,7 @@ export const APP_ROUTE = {
   OFFER: '/offer/:id',
   LOGIN: '/login',
   NOT_FOUND: '*',
+  ANCHOR: '#',
 } as const;
 
 export const City = {
